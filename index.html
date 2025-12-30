@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DNPlus Py - Edición Premium</title>
+    
+    <!-- CONFIGURACIÓN PWA -->
+    <meta name="theme-color" content="#2d0c51">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DNPlus Py">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png">
+    
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkROUGx1cyBQeSIsCiAgInNob3J0X25hbWUiOiAiRE5QbHVzIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMyZDBjNTEiLAogICJ0aGVtZV9jb2xvciI6ICIjMmQwYzUxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvVDE1Q3Z2VnAvUm91bmRlZC0yMDI1MTIwMi0yMTE0MzQucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXQp9">
+
     <style>
-        html, body { background-color: #2d0c51 !important; }
+        html, body { background-color: #2d0c51 !important; margin: 0; padding: 0; overflow: hidden; }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,15 +28,41 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* --- SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #2d0c51;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(130, 232, 242, 0.4);
+            animation: splashPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes splashPop {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #2d0c51;
             color: white;
-            margin: 0;
-            padding: 0;
             height: 100vh;
             width: 100vw;
-            overflow: hidden; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -76,6 +112,7 @@
         .visualizer-container { height: 60px; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; z-index: 10; }
         canvas#visualizerCanvas { width: 100%; height: 60px; }
 
+        /* --- BOTÓN FLOTANTE --- */
         .float-timer-btn { 
             position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; 
             background: #2d0b53; border: 2px solid #82E8F2; border-radius: 50%; 
@@ -89,6 +126,36 @@
         .timer-running { background: #ff4500 !important; color: white !important; border-color: #ffffff !important; animation: heartBeat 1.5s infinite; }
         @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
+        /* --- MENÚ LATERAL 280px --- */
+        .drawer {
+            position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+            background: rgba(30, 11, 59, 0.75); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 200; transform: translateX(-100%); 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; border-right: 1px solid rgba(130, 232, 242, 0.2);
+        }
+        .drawer.active { transform: translateX(0); }
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 190; backdrop-filter: blur(2px); }
+        .drawer-overlay.active { display: block; }
+
+        .follow-label {
+            width: 100%; text-align: center;
+            color: #82E8F2; font-family: 'Orbitron', sans-serif;
+            font-weight: 900; font-size: 14px; letter-spacing: 5px;
+            margin: 10px 0 12px 0; text-shadow: 0 0 10px rgba(130, 232, 242, 0.4);
+        }
+
+        .social-card {
+            display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;
+        }
+        .social-card:active { transform: scale(0.97); background: rgba(130, 232, 242, 0.2); }
+        .social-card i { font-size: 18px; width: 24px; text-align: center; }
+        .social-card span { font-size: 13px; font-weight: 500; color: white; }
+
         /* --- MODALES --- */
         .modal-container { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; 
@@ -100,7 +167,7 @@
 
         .modal-content {
             background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            border: 2px solid #00f2fe; border-radius: 30px; width: 100%; max-width: 400px;
+            border: 2px solid #00f2fe; border-radius: 30px; width: 100%; max-width: 380px;
             padding: 30px; position: relative; box-shadow: 0 0 50px rgba(0, 242, 254, 0.2);
             max-height: 85vh; overflow-y: auto;
         }
@@ -112,37 +179,6 @@
             font-size: 20px; font-weight: 900; cursor: pointer;
         }
 
-        /* --- MENÚ LATERAL --- */
-        .drawer {
-            position: fixed; top: 0; left: 0; width: 280px; height: 100%;
-            background: linear-gradient(135deg, #1e0b3b 0%, #0a0a1a 100%);
-            z-index: 200; transform: translateX(-100%); 
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; border-right: 1px solid rgba(130, 232, 242, 0.1);
-        }
-        .drawer.active { transform: translateX(0); }
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 190; backdrop-filter: blur(8px); }
-        .drawer-overlay.active { display: block; }
-
-        .social-card {
-            display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 12px;
-            cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;
-        }
-        .social-card:active { transform: scale(0.97); background: rgba(130, 232, 242, 0.1); }
-        .social-card i { font-size: 18px; width: 24px; text-align: center; }
-        .social-card span { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8); }
-
-        .siguenos-title {
-            font-family: 'Orbitron', sans-serif; font-size: 10px; text-transform: uppercase;
-            letter-spacing: 3px; color: #82E8F2; text-align: center; margin: 20px 0 15px 0;
-            opacity: 0.8; position: relative; display: flex; align-items: center; justify-content: center;
-        }
-        .siguenos-title::before, .siguenos-title::after {
-            content: ""; height: 1px; width: 30px; background: linear-gradient(to right, transparent, #82E8F2); margin: 0 10px;
-        }
-        .siguenos-title::after { background: linear-gradient(to left, transparent, #82E8F2); }
-
         #volumeSlider { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 5px; outline: none; }
         #volumeSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: #82E8F2; border-radius: 50%; cursor: pointer; }
 
@@ -151,11 +187,20 @@
             border-radius: 12px; color: white; padding: 12px; width: 100%; text-align: center;
             font-family: 'Roboto', sans-serif; font-size: 14px; margin-bottom: 15px; outline: none;
         }
+
+        .privacy-body h3 { color: #82E8F2; font-family: 'Orbitron', sans-serif; font-size: 12px; margin-top: 15px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; }
+        .privacy-body p { margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- CAPAS DE FONDO -->
+    <!-- PANTALLA DE SPLASH -->
+    <div id="splash-screen">
+        <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="splash-logo" alt="Logo Splash">
+        <p class="mt-6 text-cyan-400 font-['Orbitron'] font-black tracking-[5px] text-xs animate-pulse">CARGANDO...</p>
+    </div>
+
+    <!-- Capas de efectos de fondo -->
     <div id="fx0" class="effect-layer" style="background-color: #2d0c51;"></div>
     <div id="fx1" class="effect-layer bg-effect-neon"></div>
     <div id="fx2" class="effect-layer bg-effect-aurora"></div>
@@ -167,10 +212,10 @@
     <div id="overlay" class="drawer-overlay" onclick="toggleMenu()"></div>
 
     <header class="w-full p-4 flex justify-between items-center z-20">
-        <button onclick="toggleMenu()" class="w-12 h-12 bg-gray-600/30 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md">
+        <button onclick="toggleMenu()" class="w-12 h-12 bg-gray-600/30 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md border border-white/10">
             <i class="fa-solid fa-bars-staggered text-xl"></i>
         </button>
-        <button onclick="shareApp()" class="w-12 h-12 bg-gray-600/30 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md">
+        <button onclick="shareApp()" class="w-12 h-12 bg-gray-600/30 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md border border-white/10">
             <i class="fa-solid fa-share-nodes"></i>
         </button>
     </header>
@@ -196,7 +241,7 @@
         </div>
 
         <div class="flex items-center justify-center gap-10">
-            <div id="fxBtn" class="w-10 h-10 cursor-pointer flex items-center justify-center" onclick="nextEffect()">
+            <div id="fxBtn" class="w-8 h-8 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100" onclick="nextEffect()">
                 <svg viewBox="0 0 24 24" fill="white" class="w-full h-full"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
             </div>
             <button onclick="togglePlayback()" class="active:scale-90 transition-all">
@@ -206,13 +251,13 @@
         </div>
     </main>
 
-    <!-- BOTÓN PROGRAMADOR -->
+    <!-- TEMPORIZADOR -->
     <div id="timerBtn" class="float-timer-btn" onclick="openWidget('timer-modal')">
         <i class="fa-solid fa-clock"></i>
         <span id="timerBadge" class="timer-badge">00</span>
     </div>
 
-    <!-- MODALES -->
+    <!-- MODAL: DORMIR -->
     <div id="timer-modal" class="modal-container">
         <div class="modal-content text-center">
             <div class="close-modal" onclick="closeWidget('timer-modal')"><i class="fa-solid fa-xmark"></i></div>
@@ -229,7 +274,6 @@
                     <button onclick="setTimer(60)" class="bg-white/5 hover:bg-cyan-400/20 py-3 rounded-xl text-white font-bold text-sm">1h</button>
                 </div>
                 <div class="mt-4 pt-4 border-t border-white/10">
-                    <p class="text-[10px] text-white/40 uppercase tracking-widest mb-3">Tiempo personalizado (minutos)</p>
                     <input type="number" id="customMinutes" class="custom-timer-input" placeholder="Ej: 120" min="1">
                     <button onclick="applyCustomTimer()" class="bg-cyan-400 text-black w-full py-3 rounded-xl font-black uppercase tracking-widest text-xs">PROGRAMAR AHORA</button>
                 </div>
@@ -237,50 +281,37 @@
         </div>
     </div>
 
-    <!-- MODAL: PRIVACIDAD EXTENDIDA -->
+    <!-- MODAL: PRIVACIDAD -->
     <div id="privacy-modal" class="modal-container">
         <div class="modal-content">
             <div class="close-modal" onclick="closeWidget('privacy-modal')"><i class="fa-solid fa-xmark"></i></div>
-            <h2 class="font-['Orbitron'] text-xl mb-4 text-cyan-400 font-black tracking-widest border-b border-cyan-400/20 pb-4">POLÍTICA DE PRIVACIDAD</h2>
-            <div class="text-white/80 text-[12px] space-y-4 leading-relaxed text-justify pr-2">
-                <p>Bienvenido a <strong class="text-cyan-400">DNPlus Py</strong>. Tu privacidad es fundamental para nosotros. Esta política describe cómo manejamos la información dentro de nuestra aplicación móvil.</p>
-                
-                <h3 class="text-white font-bold uppercase text-[10px] tracking-widest">1. Recolección de Datos</h3>
-                <p>Nuestra aplicación ha sido desarrollada bajo el principio de "Privacidad por Diseño". <strong class="text-white">No recolectamos, almacenamos ni procesamos ningún dato personal identificable</strong> como nombres, números de teléfono, correos electrónicos o ubicaciones GPS.</p>
-                
-                <h3 class="text-white font-bold uppercase text-[10px] tracking-widest">2. Uso de la Red</h3>
-                <p>Para funcionar correctamente, la App requiere acceso a Internet con el fin de recibir el flujo de audio (streaming). Durante este proceso, se pueden transmitir datos técnicos básicos (como dirección IP) al servidor de streaming (ZenoMedia), lo cual es inherente al funcionamiento de cualquier transmisión online. Estos datos no son utilizados para seguimiento comercial.</p>
-                
-                <h3 class="text-white font-bold uppercase text-[10px] tracking-widest">3. Cookies y Tecnologías Similares</h3>
-                <p>DNPlus Py no utiliza cookies de seguimiento ni herramientas de análisis de terceros para rastrear tu comportamiento o crear perfiles de usuario.</p>
-                
-                <h3 class="text-white font-bold uppercase text-[10px] tracking-widest">4. Enlaces a Terceros</h3>
-                <p>Nuestra aplicación contiene botones que enlazan a plataformas externas como WhatsApp, Facebook, Telegram, TikTok y YouTube. Al interactuar con estos botones, serás redirigido a sus respectivas aplicaciones o sitios web, los cuales cuentan con sus propias políticas de privacidad sobre las que no tenemos control.</p>
-                
-                <h3 class="text-white font-bold uppercase text-[10px] tracking-widest">5. Permisos de la App</h3>
-                <p>Solicitamos únicamente los permisos necesarios para la reproducción multimedia. En dispositivos Android, esto incluye mantener la conexión activa mientras la pantalla está bloqueada (Wake Lock) para evitar interrupciones en la radio.</p>
-                
-                <h3 class="text-white font-bold uppercase text-[10px] tracking-widest">6. Cambios en esta Política</h3>
-                <p>Nos reservamos el derecho de actualizar esta política en cualquier momento para reflejar mejoras técnicas o cambios legales. Se recomienda revisar esta sección periódicamente.</p>
-                
-                <p class="text-[10px] pt-4 opacity-40 text-center border-t border-white/5 mt-4 uppercase">Última actualización: 29 de Diciembre, 2025</p>
+            <h2 class="font-['Orbitron'] text-xl mb-6 text-cyan-400 font-black tracking-widest border-b border-cyan-400/20 pb-4">POLÍTICA DE PRIVACIDAD</h2>
+            <div class="privacy-body text-white/80 text-[13px] leading-relaxed font-light text-justify">
+                <p>Bienvenido a <strong class="text-cyan-400">DNPlus Py</strong>. Tu privacidad es una prioridad absoluta.</p>
+                <h3>1. Recopilación de Información</h3>
+                <p>No recopilamos ni almacenamos información personal identificable.</p>
+                <h3>2. Uso de Permisos</h3>
+                <p>Solo requerimos acceso a internet para la transmisión de audio.</p>
+                <h3>3. Cookies y Almacenamiento</h3>
+                <p>Guardamos preferencias locales mínimas en tu dispositivo.</p>
+                <p class="mt-4 italic text-cyan-400/60 font-medium text-[11px]">Última actualización: Diciembre 2025.</p>
             </div>
-            <button onclick="closeWidget('privacy-modal')" class="mt-6 bg-cyan-400 text-black w-full py-3 rounded-xl font-black uppercase tracking-widest text-xs shadow-[0_0_15px_rgba(0,242,254,0.4)]">ACEPTAR Y CERRAR</button>
+            <button onclick="closeWidget('privacy-modal')" class="mt-8 bg-cyan-400 text-black w-full py-3 rounded-xl font-black uppercase tracking-widest text-xs">ACEPTAR</button>
         </div>
     </div>
 
     <!-- MENÚ LATERAL -->
     <div id="drawer" class="drawer">
-        <div class="p-4 flex flex-col items-center border-b border-white/5">
-            <div class="w-full flex justify-end mb-1">
-                <button onclick="toggleMenu()" class="text-white/40 text-xl"><i class="fa-solid fa-xmark"></i></button>
+        <div class="p-6 flex flex-col items-center border-b border-white/10">
+            <div class="w-full flex justify-end mb-2">
+                <button onclick="toggleMenu()" class="text-white/40 text-2xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-16 h-16 rounded-xl shadow-2xl border border-white/10">
+            <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-16 h-16 rounded-xl shadow-2xl border border-white/20">
             <h1 class="mt-4 font-black text-white tracking-[4px] text-[12px] font-['Orbitron']">DNPLUS PY</h1>
         </div>
-        <div class="flex-grow overflow-y-auto px-5 py-2">
-            <div class="siguenos-title">Síguenos</div>
-            
+        
+        <div class="flex-grow overflow-y-auto px-6 py-2">
+            <div class="follow-label">SIGUENOS</div>
             <div onclick="openUrl('https://api.whatsapp.com/send?phone=595992536184')" class="social-card">
                 <i class="fa-brands fa-whatsapp text-green-400"></i><span>WhatsApp</span>
             </div>
@@ -297,13 +328,14 @@
                 <i class="fa-brands fa-youtube text-red-600"></i><span>YouTube</span>
             </div>
         </div>
-        <div class="p-6 border-t border-white/5">
-            <div onclick="openPrivacy()" class="text-center text-[10px] text-cyan-400 font-bold uppercase tracking-widest cursor-pointer hover:text-white">Política de Privacidad</div>
-            <p class="text-[8px] text-center text-white/20 mt-2 tracking-[3px]">DN PREMIUM V4.6.2</p>
+        
+        <div class="p-6 border-t border-white/10">
+            <div onclick="openPrivacy()" class="text-center text-[10px] text-cyan-400 font-bold uppercase tracking-widest cursor-pointer hover:text-white transition-colors">Política de Privacidad</div>
+            <p class="text-[8px] text-center text-white/40 mt-2 tracking-[3px]">DN PREMIUM V4.6.2</p>
         </div>
     </div>
 
-    <audio id="radio" src="https://stream.zeno.fm/g2jfwe9xd1bvv" crossorigin="anonymous" preload="auto"></audio>
+    <audio id="radio" src="https://stream.zeno.fm/g2jfwe9xd1bvv" crossorigin="anonymous"></audio>
 
     <script>
         const audio = document.getElementById('radio');
@@ -312,30 +344,32 @@
         const canvas = document.getElementById('visualizerCanvas');
         const ctx = canvas.getContext('2d');
         const timerBtn = document.getElementById('timerBtn');
+        const splash = document.getElementById('splash-screen');
 
         let isPlaying = false, currentFx = 1, sleepTimerId = null, sleepIntervalId = null, totalSecondsRemaining = 0;
         let audioCtx, analyser, source, dataArray, animationId, hueOffset = 0;
 
-        function updateMediaSession() {
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: 'DNPlus Py',
-                    artist: 'Radio en Vivo',
-                    album: 'Paraguay al Mundo',
-                    artwork: [{ src: 'https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png', sizes: '512x512', type: 'image/png' }]
-                });
-                navigator.mediaSession.setActionHandler('play', togglePlayback);
-                navigator.mediaSession.setActionHandler('pause', togglePlayback);
-            }
-        }
+        // Splash screen control
+        window.addEventListener('load', () => {
+            canvas.width = canvas.offsetWidth; 
+            canvas.height = canvas.offsetHeight;
+            document.getElementById('fx' + currentFx).classList.add('effect-active');
+            
+            // Ocultar splash tras 3 segundos
+            setTimeout(() => {
+                splash.classList.add('hidden');
+            }, 3000);
+        });
 
         function openWidget(id) { document.getElementById(id).classList.add('active'); }
         function closeWidget(id) { document.getElementById(id).classList.remove('active'); }
         function openPrivacy() { toggleMenu(); openWidget('privacy-modal'); }
+        function openUrl(url) { window.open(url, '_blank'); }
 
-        function openUrl(url) {
-            window.open(url, '_system'); 
-            window.location.href = url;
+        function applyCustomTimer() {
+            const val = document.getElementById('customMinutes').value;
+            const minutes = parseInt(val);
+            if (!isNaN(minutes) && minutes > 0) setTimer(minutes);
         }
 
         function setTimer(minutes) {
@@ -346,10 +380,8 @@
             sleepTimerId = setTimeout(() => { if (isPlaying) togglePlayback(); cancelTimer(); }, totalSecondsRemaining * 1000);
             sleepIntervalId = setInterval(() => {
                 totalSecondsRemaining--;
-                const mins = Math.floor(totalSecondsRemaining / 60);
-                const secs = totalSecondsRemaining % 60;
-                document.getElementById('remaining-time').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                document.getElementById('timerBadge').innerText = (mins + 1) > 99 ? '99+' : (mins + 1);
+                const mins = Math.ceil(totalSecondsRemaining / 60);
+                document.getElementById('timerBadge').innerText = mins > 99 ? '99+' : mins;
                 if (totalSecondsRemaining <= 0) cancelTimer();
             }, 1000);
             document.getElementById('timer-setup-ui').classList.add('hidden');
@@ -384,10 +416,7 @@
             for (let i = 0; i < dataArray.length; i++) {
                 const barHeight = (dataArray[i] / 255) * canvas.height;
                 ctx.fillStyle = `hsl(${(i / dataArray.length * 360) + hueOffset % 360}, 100%, 60%)`;
-                ctx.beginPath();
-                if(ctx.roundRect) ctx.roundRect(x, canvas.height - barHeight, barWidth - 4, barHeight, 5);
-                else ctx.rect(x, canvas.height - barHeight, barWidth - 4, barHeight);
-                ctx.fill();
+                ctx.beginPath(); ctx.roundRect(x, canvas.height - barHeight, barWidth - 4, barHeight, 5); ctx.fill();
                 x += barWidth;
             }
         }
@@ -395,20 +424,13 @@
         function togglePlayback() {
             if (!isPlaying) {
                 initAudioContext(); if (audioCtx.state === 'suspended') audioCtx.resume();
-                audio.play().then(() => {
-                    updateMediaSession();
-                    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
-                }).catch(e => console.error(e));
-                playIcon.src = "https://i.postimg.cc/Y2J6d1Xz/pause-(1).png";
+                audio.play(); playIcon.src = "https://i.postimg.cc/Y2J6d1Xz/pause-(1).png";
                 document.getElementById('logo').classList.add('logo-playing');
                 isPlaying = true; drawVisualizer();
             } else {
-                audio.pause();
-                if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
-                playIcon.src = "https://i.postimg.cc/sXLXD4BJ/play.png";
+                audio.pause(); playIcon.src = "https://i.postimg.cc/sXLXD4BJ/play.png";
                 document.getElementById('logo').classList.remove('logo-playing');
                 isPlaying = false; cancelAnimationFrame(animationId);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
         }
 
@@ -425,14 +447,10 @@
 
         function shareApp() {
             const url = 'https://www.mediafire.com/file/c5vmtub0j0jhs0w/DNPlus_Py.apk/file';
-            if (navigator.share) navigator.share({ title: 'DNPlus Py', url }); else openUrl(url);
+            if (navigator.share) navigator.share({ title: 'DNPlus Py', url }); else window.open(url, '_blank');
         }
 
         volSlider.addEventListener('input', (e) => audio.volume = e.target.value);
-        window.onload = () => {
-            document.getElementById('fx' + currentFx).classList.add('effect-active');
-            canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
-        };
     </script>
 </body>
 </html>
