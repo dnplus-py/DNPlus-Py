@@ -28,35 +28,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- SPLASH SCREEN --- */
-        #splash-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #2d0c51;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-        #splash-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .splash-logo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(130, 232, 242, 0.4);
-            animation: splashPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes splashPop {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #2d0c51;
@@ -126,83 +97,108 @@
         .timer-running { background: #ff4500 !important; color: white !important; border-color: #ffffff !important; animation: heartBeat 1.5s infinite; }
         @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-        /* --- MENÚ LATERAL 280px --- */
+        /* --- MENÚ LATERAL --- */
         .drawer {
             position: fixed; top: 0; left: 0; width: 280px; height: 100%;
-            background: rgba(30, 11, 59, 0.75); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(30, 11, 59, 0.98); 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             z-index: 200; transform: translateX(-100%); 
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; border-right: 1px solid rgba(130, 232, 242, 0.2);
         }
         .drawer.active { transform: translateX(0); }
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 190; backdrop-filter: blur(2px); }
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; z-index: 190; backdrop-filter: blur(4px); }
         .drawer-overlay.active { display: block; }
+
+        .close-drawer-btn {
+            position: absolute; top: 15px; right: 15px;
+            width: 36px; height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 18px; cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 210;
+        }
+        .close-drawer-btn:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.9); }
 
         .follow-label {
             width: 100%; text-align: center;
             color: #82E8F2; font-family: 'Orbitron', sans-serif;
-            font-weight: 900; font-size: 14px; letter-spacing: 5px;
-            margin: 10px 0 12px 0; text-shadow: 0 0 10px rgba(130, 232, 242, 0.4);
+            font-weight: 900; font-size: 13px; letter-spacing: 4px;
+            margin: 10px 0 10px 0; opacity: 0.9;
         }
 
         .social-card {
-            display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 10px;
-            cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 15px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 12px;
+            padding: 10px 18px; 
+            cursor: pointer; transition: all 0.2s ease;
+            margin: 0 12px 8px 12px;
         }
-        .social-card:active { transform: scale(0.97); background: rgba(130, 232, 242, 0.2); }
-        .social-card i { font-size: 18px; width: 24px; text-align: center; }
-        .social-card span { font-size: 13px; font-weight: 500; color: white; }
+        .social-card:active { background: rgba(130, 232, 242, 0.15); transform: scale(0.98); }
+        .social-card i { font-size: 16px; width: 20px; text-align: center; }
+        .social-card span { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.9); }
 
         /* --- MODALES --- */
         .modal-container { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; 
             display: none; align-items: center; justify-content: center; padding: 25px;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
         .modal-container.active { display: flex; animation: modalIn 0.3s ease-out; }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .modal-content {
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            border: 2px solid #00f2fe; border-radius: 30px; width: 100%; max-width: 380px;
-            padding: 30px; position: relative; box-shadow: 0 0 50px rgba(0, 242, 254, 0.2);
-            max-height: 85vh; overflow-y: auto;
+            background: #111827;
+            border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 24px; width: 100%; max-width: 400px;
+            padding: 25px; position: relative;
+            max-height: 80vh; display: flex; flex-direction: column;
         }
 
         .close-modal {
-            position: absolute; top: -15px; right: -15px;
-            width: 40px; height: 40px; background: #00f2fe; color: #000;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 900; cursor: pointer;
+            position: absolute; top: 15px; right: 15px;
+            width: 30px; height: 30px; color: #82E8F2;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; cursor: pointer; z-index: 10;
         }
 
         #volumeSlider { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 5px; outline: none; }
         #volumeSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: #82E8F2; border-radius: 50%; cursor: pointer; }
 
+        /* Estilo para el input de minutos personalizados */
         .custom-timer-input {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 242, 254, 0.3);
-            border-radius: 12px; color: white; padding: 12px; width: 100%; text-align: center;
-            font-family: 'Roboto', sans-serif; font-size: 14px; margin-bottom: 15px; outline: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(130, 232, 242, 0.3);
+            border-radius: 12px;
+            color: #82E8F2;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            width: 80px;
+            outline: none;
+            transition: all 0.3s ease;
         }
+        .custom-timer-input:focus { border-color: #82E8F2; box-shadow: 0 0 10px rgba(130, 232, 242, 0.5); }
 
-        .privacy-body h3 { color: #82E8F2; font-family: 'Orbitron', sans-serif; font-size: 12px; margin-top: 15px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; }
-        .privacy-body p { margin-bottom: 10px; }
+        .privacy-scroll {
+            overflow-y: auto; padding: 10px 10px;
+            font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.7;
+            text-align: justify;
+        }
+        .privacy-scroll::-webkit-scrollbar { width: 4px; }
+        .privacy-scroll::-webkit-scrollbar-thumb { background: #00f2fe; border-radius: 10px; }
+        .privacy-scroll h3 { color: #00f2fe; font-weight: bold; margin-top: 15px; margin-bottom: 5px; text-transform: uppercase; font-size: 11px; }
     </style>
 </head>
 <body>
 
-    <!-- PANTALLA DE SPLASH -->
-    <div id="splash-screen">
-        <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="splash-logo" alt="Logo Splash">
-        <p class="mt-6 text-cyan-400 font-['Orbitron'] font-black tracking-[5px] text-xs animate-pulse">CARGANDO...</p>
-    </div>
-
-    <!-- Capas de efectos de fondo -->
     <div id="fx0" class="effect-layer" style="background-color: #2d0c51;"></div>
-    <div id="fx1" class="effect-layer bg-effect-neon"></div>
+    <div id="fx1" class="effect-layer bg-effect-neon effect-active"></div>
     <div id="fx2" class="effect-layer bg-effect-aurora"></div>
     <div id="fx3" class="effect-layer bg-effect-stars"></div>
     <div id="fx4" class="effect-layer bg-effect-plasma"></div>
@@ -212,16 +208,16 @@
     <div id="overlay" class="drawer-overlay" onclick="toggleMenu()"></div>
 
     <header class="w-full p-4 flex justify-between items-center z-20">
-        <button onclick="toggleMenu()" class="w-12 h-12 bg-gray-600/30 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md border border-white/10">
-            <i class="fa-solid fa-bars-staggered text-xl"></i>
+        <button onclick="toggleMenu()" class="w-11 h-11 bg-gray-600/20 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md border border-white/5">
+            <i class="fa-solid fa-bars-staggered"></i>
         </button>
-        <button onclick="shareApp()" class="w-12 h-12 bg-gray-600/30 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md border border-white/10">
+        <button onclick="shareApp()" class="w-11 h-11 bg-gray-600/20 rounded-full flex items-center justify-center text-cyan-400 backdrop-blur-md border border-white/5">
             <i class="fa-solid fa-share-nodes"></i>
         </button>
     </header>
 
     <main class="flex-grow flex flex-col items-center justify-start w-full px-6 text-center z-10">
-        <div class="mt-0 relative">
+        <div class="mt-4 relative">
              <img id="logo" src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="logo-box">
         </div>
         <div class="brand-main">DNPlus Py</div>
@@ -235,88 +231,97 @@
         </div>
         
         <div class="w-full max-w-xs flex items-center gap-4 mb-8">
-            <i class="fa-solid fa-volume-off text-xs opacity-50"></i>
+            <i class="fa-solid fa-volume-low text-[10px] opacity-40"></i>
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
-            <i class="fa-solid fa-volume-high text-xs opacity-50"></i>
+            <i class="fa-solid fa-volume-high text-[10px] opacity-40"></i>
         </div>
 
         <div class="flex items-center justify-center gap-10">
-            <div id="fxBtn" class="w-8 h-8 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100" onclick="nextEffect()">
-                <svg viewBox="0 0 24 24" fill="white" class="w-full h-full"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+            <div id="fxBtn" class="w-8 h-8 flex items-center justify-center cursor-pointer opacity-50 hover:opacity-100" onclick="nextEffect()">
+                <svg viewBox="0 0 24 24" fill="white" class="w-6 h-6"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             </div>
             <button onclick="togglePlayback()" class="active:scale-90 transition-all">
-                <img id="playIcon" src="https://i.postimg.cc/sXLXD4BJ/play.png" style="width: 105px; height: 105px;">
+                <img id="playIcon" src="https://i.postimg.cc/sXLXD4BJ/play.png" style="width: 100px; height: 100px;">
             </button>
-            <img id="liveIndicator" src="https://i.postimg.cc/z3mYvg2R/live-stream.png" class="w-12 h-12 opacity-40">
+            <img id="liveIndicator" src="https://i.postimg.cc/z3mYvg2R/live-stream.png" class="w-10 h-10 opacity-30">
         </div>
     </main>
 
-    <!-- TEMPORIZADOR -->
     <div id="timerBtn" class="float-timer-btn" onclick="openWidget('timer-modal')">
         <i class="fa-solid fa-clock"></i>
         <span id="timerBadge" class="timer-badge">00</span>
     </div>
 
-    <!-- MODAL: DORMIR -->
+    <!-- MODAL TEMPORIZADOR PERSONALIZADO -->
     <div id="timer-modal" class="modal-container">
         <div class="modal-content text-center">
             <div class="close-modal" onclick="closeWidget('timer-modal')"><i class="fa-solid fa-xmark"></i></div>
-            <i class="fa-solid fa-hourglass-half text-5xl text-cyan-400 mb-6"></i>
-            <h2 class="font-['Orbitron'] text-xl mb-6 text-white font-black tracking-widest">DORMIR RADIO</h2>
-            <div id="timer-active-ui" class="hidden mb-6">
-                <p id="remaining-time" class="text-5xl text-white font-black mb-6">00:00</p>
-                <button onclick="cancelTimer()" class="bg-red-600 text-white w-full py-3 rounded-xl font-bold uppercase tracking-widest">CANCELAR</button>
+            <h2 class="font-['Orbitron'] text-sm mb-4 text-cyan-400 font-black tracking-widest uppercase">Apagado Programado</h2>
+            
+            <p class="text-[10px] text-white/40 mb-4 uppercase tracking-tighter">Accesos Rápidos</p>
+            <div class="grid grid-cols-3 gap-3 mb-6">
+                <button onclick="setTimer(15)" class="bg-white/5 py-3 rounded-xl text-white font-bold text-[10px] uppercase border border-white/5 active:bg-cyan-400 active:text-black">15 Min</button>
+                <button onclick="setTimer(30)" class="bg-white/5 py-3 rounded-xl text-white font-bold text-[10px] uppercase border border-white/5 active:bg-cyan-400 active:text-black">30 Min</button>
+                <button onclick="setTimer(60)" class="bg-white/5 py-3 rounded-xl text-white font-bold text-[10px] uppercase border border-white/5 active:bg-cyan-400 active:text-black">60 Min</button>
             </div>
-            <div id="timer-setup-ui">
-                <div class="grid grid-cols-3 gap-2 mb-4">
-                    <button onclick="setTimer(15)" class="bg-white/5 hover:bg-cyan-400/20 py-3 rounded-xl text-white font-bold text-sm">15m</button>
-                    <button onclick="setTimer(30)" class="bg-white/5 hover:bg-cyan-400/20 py-3 rounded-xl text-white font-bold text-sm">30m</button>
-                    <button onclick="setTimer(60)" class="bg-white/5 hover:bg-cyan-400/20 py-3 rounded-xl text-white font-bold text-sm">1h</button>
+
+            <p class="text-[10px] text-white/40 mb-3 uppercase tracking-tighter">Tiempo a Medida (Minutos)</p>
+            <div class="flex flex-col items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <input type="number" id="customMinutes" min="1" max="120" placeholder="00" class="custom-timer-input">
+                    <button onclick="setCustomTimer()" class="bg-cyan-400 text-black px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest">Iniciar</button>
                 </div>
-                <div class="mt-4 pt-4 border-t border-white/10">
-                    <input type="number" id="customMinutes" class="custom-timer-input" placeholder="Ej: 120" min="1">
-                    <button onclick="applyCustomTimer()" class="bg-cyan-400 text-black w-full py-3 rounded-xl font-black uppercase tracking-widest text-xs">PROGRAMAR AHORA</button>
-                </div>
+                <button onclick="cancelTimer()" id="cancelTimerBtn" class="hidden text-red-500 font-bold text-[10px] uppercase tracking-widest mt-2">Cancelar Temporizador</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: PRIVACIDAD -->
+    <!-- MODAL PRIVACIDAD -->
     <div id="privacy-modal" class="modal-container">
         <div class="modal-content">
             <div class="close-modal" onclick="closeWidget('privacy-modal')"><i class="fa-solid fa-xmark"></i></div>
-            <h2 class="font-['Orbitron'] text-xl mb-6 text-cyan-400 font-black tracking-widest border-b border-cyan-400/20 pb-4">POLÍTICA DE PRIVACIDAD</h2>
-            <div class="privacy-body text-white/80 text-[13px] leading-relaxed font-light text-justify">
-                <p>Bienvenido a <strong class="text-cyan-400">DNPlus Py</strong>. Tu privacidad es una prioridad absoluta.</p>
+            <h2 class="font-['Orbitron'] text-sm mb-4 text-cyan-400 font-black tracking-widest uppercase border-b border-white/5 pb-2 text-center">Política de Privacidad</h2>
+            <div class="privacy-scroll">
+                <p class="mb-4 text-xs italic opacity-60">Última revisión: 30 de diciembre de 2025</p>
+                <p>Bienvenido a <strong>DNPlus Py</strong>. Su privacidad es de suma importancia para nosotros. Esta Política describe cómo manejamos la información cuando utiliza nuestra aplicación de transmisión de audio.</p>
                 <h3>1. Recopilación de Información</h3>
-                <p>No recopilamos ni almacenamos información personal identificable.</p>
+                <p>DNPlus Py es una aplicación diseñada para el acceso directo a contenidos de audio. <strong>No recopilamos ni almacenamos datos personales de identificación</strong> (como nombres, correos electrónicos o números de teléfono) para el uso básico de la aplicación.</p>
                 <h3>2. Uso de Permisos</h3>
-                <p>Solo requerimos acceso a internet para la transmisión de audio.</p>
-                <h3>3. Cookies y Almacenamiento</h3>
-                <p>Guardamos preferencias locales mínimas en tu dispositivo.</p>
-                <p class="mt-4 italic text-cyan-400/60 font-medium text-[11px]">Última actualización: Diciembre 2025.</p>
+                <p>La aplicación puede solicitar permisos básicos del sistema únicamente para asegurar la correcta transmisión del streaming y la funcionalidad del reproductor en segundo plano.</p>
+                <h3>3. Cookies y Almacenamiento Local</h3>
+                <p>Utilizamos almacenamiento local técnico para recordar sus preferencias de usuario, como el nivel de volumen seleccionado y el temporizador de apagado.</p>
+                <h3>4. Servicios de Terceros</h3>
+                <p>Utilizamos servicios de streaming externos (como Zeno Media). Estos proveedores pueden recopilar datos técnicos anónimos (dirección IP, tipo de dispositivo) para fines estadísticos.</p>
+                <h3>5. Publicidad</h3>
+                <p>Si la aplicación muestra anuncios, estos son gestionados por redes de terceros que pueden utilizar identificadores anónimos para mostrar publicidad relevante.</p>
+                <h3>6. Seguridad</h3>
+                <p>Implementamos medidas de seguridad estándar para proteger la integridad de nuestra aplicación.</p>
+                <h3>7. Menores de Edad</h3>
+                <p>DNPlus Py es apta para todas las edades. No recopilamos conscientemente datos de menores de 13 años.</p>
+                <h3>8. Cambios en la Política</h3>
+                <p>Nos reservamos el derecho de actualizar esta declaración. Cualquier cambio será publicado dentro de esta misma sección.</p>
+                <p class="mt-6 text-[10px] text-cyan-400 text-center font-bold">© 2025 DNPlus Py - Calidad Digital desde Paraguay.</p>
             </div>
-            <button onclick="closeWidget('privacy-modal')" class="mt-8 bg-cyan-400 text-black w-full py-3 rounded-xl font-black uppercase tracking-widest text-xs">ACEPTAR</button>
+            <button onclick="closeWidget('privacy-modal')" class="mt-4 bg-cyan-400 text-black py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-colors">Aceptar y Cerrar</button>
         </div>
     </div>
 
     <!-- MENÚ LATERAL -->
     <div id="drawer" class="drawer">
-        <div class="p-6 flex flex-col items-center border-b border-white/10">
-            <div class="w-full flex justify-end mb-2">
-                <button onclick="toggleMenu()" class="text-white/40 text-2xl"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-16 h-16 rounded-xl shadow-2xl border border-white/20">
-            <h1 class="mt-4 font-black text-white tracking-[4px] text-[12px] font-['Orbitron']">DNPLUS PY</h1>
+        <div class="close-drawer-btn" onclick="toggleMenu()">
+            <i class="fa-solid fa-xmark"></i>
         </div>
-        
-        <div class="flex-grow overflow-y-auto px-6 py-2">
-            <div class="follow-label">SIGUENOS</div>
+        <div class="p-6 flex flex-col items-center">
+            <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-14 h-14 rounded-2xl shadow-xl">
+            <h1 class="mt-3 font-black text-white tracking-[3px] text-[11px] font-['Orbitron']">DNPLUS PY</h1>
+        </div>
+        <div class="flex-grow overflow-y-auto pt-0">
+            <div class="follow-label">SÍGUENOS</div>
             <div onclick="openUrl('https://api.whatsapp.com/send?phone=595992536184')" class="social-card">
-                <i class="fa-brands fa-whatsapp text-green-400"></i><span>WhatsApp</span>
+                <i class="fa-brands fa-whatsapp text-green-500"></i><span>WhatsApp</span>
             </div>
             <div onclick="openUrl('https://www.facebook.com/profile.php?id=61578235681061')" class="social-card">
-                <i class="fa-brands fa-facebook text-blue-500"></i><span>Facebook</span>
+                <i class="fa-brands fa-facebook text-blue-600"></i><span>Facebook</span>
             </div>
             <div onclick="openUrl('https://t.me/dnchats_Ms')" class="social-card">
                 <i class="fa-brands fa-telegram text-sky-400"></i><span>Telegram</span>
@@ -327,11 +332,14 @@
             <div onclick="openUrl('https://www.youtube.com/@davidysugrupotropical')" class="social-card">
                 <i class="fa-brands fa-youtube text-red-600"></i><span>YouTube</span>
             </div>
+            <div class="mt-2 px-6">
+                <div onclick="openPrivacy()" class="text-center text-[10px] text-cyan-400 font-bold uppercase tracking-[3px] cursor-pointer py-3 hover:opacity-70 transition-opacity">
+                    Política de Privacidad
+                </div>
+            </div>
         </div>
-        
-        <div class="p-6 border-t border-white/10">
-            <div onclick="openPrivacy()" class="text-center text-[10px] text-cyan-400 font-bold uppercase tracking-widest cursor-pointer hover:text-white transition-colors">Política de Privacidad</div>
-            <p class="text-[8px] text-center text-white/40 mt-2 tracking-[3px]">DN PREMIUM V4.6.2</p>
+        <div class="p-4 text-center opacity-20">
+            <p class="text-[8px] tracking-[2px]">VERSIÓN 4.8.5</p>
         </div>
     </div>
 
@@ -344,57 +352,56 @@
         const canvas = document.getElementById('visualizerCanvas');
         const ctx = canvas.getContext('2d');
         const timerBtn = document.getElementById('timerBtn');
-        const splash = document.getElementById('splash-screen');
+        const timerBadge = document.getElementById('timerBadge');
+        const customMinutesInput = document.getElementById('customMinutes');
+        const cancelTimerBtn = document.getElementById('cancelTimerBtn');
 
-        let isPlaying = false, currentFx = 1, sleepTimerId = null, sleepIntervalId = null, totalSecondsRemaining = 0;
+        let isPlaying = false, currentFx = 1, sleepTimerId = null;
         let audioCtx, analyser, source, dataArray, animationId, hueOffset = 0;
 
-        // Splash screen control
         window.addEventListener('load', () => {
             canvas.width = canvas.offsetWidth; 
             canvas.height = canvas.offsetHeight;
-            document.getElementById('fx' + currentFx).classList.add('effect-active');
-            
-            // Ocultar splash tras 3 segundos
-            setTimeout(() => {
-                splash.classList.add('hidden');
-            }, 3000);
+            const savedVol = localStorage.getItem('dn_vol') || 1;
+            audio.volume = savedVol;
+            volSlider.value = savedVol;
         });
 
         function openWidget(id) { document.getElementById(id).classList.add('active'); }
         function closeWidget(id) { document.getElementById(id).classList.remove('active'); }
-        function openPrivacy() { toggleMenu(); openWidget('privacy-modal'); }
         function openUrl(url) { window.open(url, '_blank'); }
-
-        function applyCustomTimer() {
-            const val = document.getElementById('customMinutes').value;
-            const minutes = parseInt(val);
-            if (!isNaN(minutes) && minutes > 0) setTimer(minutes);
-        }
+        function openPrivacy() { toggleMenu(); openWidget('privacy-modal'); }
 
         function setTimer(minutes) {
-            cancelTimer();
-            totalSecondsRemaining = minutes * 60;
+            if (sleepTimerId) clearTimeout(sleepTimerId);
             timerBtn.classList.add('timer-running');
-            document.getElementById('timerBadge').innerText = minutes > 99 ? '99+' : minutes;
-            sleepTimerId = setTimeout(() => { if (isPlaying) togglePlayback(); cancelTimer(); }, totalSecondsRemaining * 1000);
-            sleepIntervalId = setInterval(() => {
-                totalSecondsRemaining--;
-                const mins = Math.ceil(totalSecondsRemaining / 60);
-                document.getElementById('timerBadge').innerText = mins > 99 ? '99+' : mins;
-                if (totalSecondsRemaining <= 0) cancelTimer();
-            }, 1000);
-            document.getElementById('timer-setup-ui').classList.add('hidden');
-            document.getElementById('timer-active-ui').classList.remove('hidden');
+            cancelTimerBtn.classList.remove('hidden');
+            timerBadge.innerText = minutes;
+            
+            sleepTimerId = setTimeout(() => { 
+                if (isPlaying) togglePlayback(); 
+                cancelTimer();
+            }, minutes * 60000);
+            
+            closeWidget('timer-modal');
+        }
+
+        function setCustomTimer() {
+            const val = parseInt(customMinutesInput.value);
+            if (isNaN(val) || val <= 0) {
+                customMinutesInput.style.borderColor = "red";
+                setTimeout(() => customMinutesInput.style.borderColor = "", 2000);
+                return;
+            }
+            setTimer(val);
         }
 
         function cancelTimer() {
             if (sleepTimerId) clearTimeout(sleepTimerId);
-            if (sleepIntervalId) clearInterval(sleepIntervalId);
-            sleepTimerId = null; sleepIntervalId = null;
+            sleepTimerId = null;
             timerBtn.classList.remove('timer-running');
-            document.getElementById('timer-setup-ui').classList.remove('hidden');
-            document.getElementById('timer-active-ui').classList.add('hidden');
+            cancelTimerBtn.classList.add('hidden');
+            timerBadge.innerText = "00";
         }
 
         function initAudioContext() {
@@ -403,7 +410,7 @@
                 analyser = audioCtx.createAnalyser();
                 source = audioCtx.createMediaElementSource(audio);
                 source.connect(analyser); analyser.connect(audioCtx.destination);
-                analyser.fftSize = 128; dataArray = new Uint8Array(analyser.frequencyBinCount);
+                analyser.fftSize = 64; dataArray = new Uint8Array(analyser.frequencyBinCount);
             }
         }
 
@@ -411,12 +418,12 @@
             animationId = requestAnimationFrame(drawVisualizer);
             analyser.getByteFrequencyData(dataArray);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const barWidth = (canvas.width / dataArray.length) * 2.5;
-            let x = 0; hueOffset += 2;
+            const barWidth = (canvas.width / dataArray.length);
+            let x = 0; hueOffset += 1;
             for (let i = 0; i < dataArray.length; i++) {
                 const barHeight = (dataArray[i] / 255) * canvas.height;
-                ctx.fillStyle = `hsl(${(i / dataArray.length * 360) + hueOffset % 360}, 100%, 60%)`;
-                ctx.beginPath(); ctx.roundRect(x, canvas.height - barHeight, barWidth - 4, barHeight, 5); ctx.fill();
+                ctx.fillStyle = `hsl(${(i * 10) + hueOffset % 360}, 80%, 60%)`;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
                 x += barWidth;
             }
         }
@@ -446,11 +453,14 @@
         }
 
         function shareApp() {
-            const url = 'https://www.mediafire.com/file/c5vmtub0j0jhs0w/DNPlus_Py.apk/file';
+            const url = 'https://dnplus-py.github.io/DNPlus-Py/';
             if (navigator.share) navigator.share({ title: 'DNPlus Py', url }); else window.open(url, '_blank');
         }
 
-        volSlider.addEventListener('input', (e) => audio.volume = e.target.value);
+        volSlider.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+            localStorage.setItem('dn_vol', e.target.value);
+        });
     </script>
 </body>
 </html>
