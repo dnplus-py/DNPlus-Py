@@ -1,9 +1,15 @@
+<!-- Package ID: com.dnpluspy.radio -->
 <!DOCTYPE html>
 <html lang="es" style="background-color: #2d0c51;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DNPlus Py - Edición Premium</title>
+    
+    <!-- IDENTIFICACIÓN DE PAQUETE PARA GOOGLE/ANDROID -->
+    <meta name="package-name" content="com.dnpluspy.radio">
+    <meta name="application-name" content="DNPlus Py">
+    <meta name="apple-itunes-app" content="app-id=com.dnpluspy.radio">
     
     <!-- CONFIGURACIÓN PWA -->
     <meta name="theme-color" content="#2d0c51">
@@ -12,7 +18,7 @@
     <meta name="apple-mobile-web-app-title" content="DNPlus Py">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png">
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkROUGx1cyBQeSIsCiAgInNob3J0X25hbWUiOiAiRE5QbHVzIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMmQwYzUxIiwKICAidGhlbWVfY29sb3IiOiAiIzJkMGM1MSIsCiAgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwKICAic2NvcGUiOiAiLi8iLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9UMTVDdnZWcC9Sb3VuZGVkLTIwMjUxMjAyLTIxMTQzNC5wbmciLAogICAgICAic2l6ZXMiIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkROUGx1cyBQeSIsCiAgInNob3J0X25hbWUiOiAiRE5QbHVzIiwKICAiaWRlbnRpZmllciI6ICJjb20uZG5wbHVzcHkucmFkaW8iLAogICJzdGFyd_VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJkMGM1MSIsCiAgInRoZW1lX2NvbG9yIjogIiMydZBjNTEiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImh0dHBzOi8vaS5wb3N0aW1nLmNjL1QxNUN2dlZwL1JvdW5kZWQtMjAyNTEyMDItMjExNDM0LnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
 
     <style>
         html, body { background-color: #2d0c51 !important; margin: 0; padding: 0; overflow: hidden; }
@@ -124,7 +130,6 @@
         .social-card span { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.9); }
 
         .social-card.privacy-btn { background: transparent !important; border: 1px solid rgba(130, 232, 242, 0.1); }
-        .ai-card { background: linear-gradient(45deg, rgba(130, 232, 242, 0.1), rgba(255, 105, 180, 0.1)) !important; border: 1px solid rgba(130, 232, 242, 0.3) !important; }
 
         /* --- MODALES --- */
         .modal-container { 
@@ -152,11 +157,6 @@
         .privacy-scroll h3 { color: #00f2fe; font-weight: bold; margin-top: 15px; margin-bottom: 5px; text-transform: uppercase; font-size: 11px; }
 
         .drawer-footer { padding: 20px 0; border-top: 1px solid rgba(130, 232, 242, 0.1); }
-
-        /* AI Chat UI */
-        #ai-response { min-height: 100px; overflow-y: auto; font-size: 13px; color: #e2e8f0; line-height: 1.6; }
-        .loader-sparkle { animation: spin 2s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -236,22 +236,6 @@
         </div>
     </div>
 
-    <!-- MODAL GEMINI AI -->
-    <div id="ai-modal" class="modal-container">
-        <div class="modal-content">
-            <div class="close-modal" onclick="closeWidget('ai-modal')"><i class="fa-solid fa-xmark"></i></div>
-            <h2 class="font-['Orbitron'] text-sm mb-4 text-cyan-400 font-black tracking-widest uppercase text-center flex items-center justify-center gap-2">
-                Asistente Musical ✨
-            </h2>
-            <div id="ai-response" class="bg-black/20 p-4 rounded-xl mb-4 border border-white/5">
-                <p class="text-center opacity-50 italic">Haz clic en el botón para que Gemini analice la señal...</p>
-            </div>
-            <button id="ask-ai-btn" onclick="askGemini()" class="bg-gradient-to-r from-cyan-400 to-pink-500 text-black py-4 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform">
-                <span>¿Qué estoy escuchando? ✨</span>
-            </button>
-        </div>
-    </div>
-
     <!-- MODAL PRIVACIDAD -->
     <div id="privacy-modal" class="modal-container">
         <div class="modal-content">
@@ -261,18 +245,15 @@
                 <p class="mb-4 text-xs italic opacity-60">Última revisión: 30 de diciembre de 2025</p>
                 
                 <h3>1. Información General</h3>
-                <p>DNPlus Py ("nosotros", "la aplicación") es un reproductor de streaming de audio digital. Esta política explica cómo manejamos la información en relación con su uso de la aplicación.</p>
+                <p>DNPlus Py ("nosotros", "la aplicación") es un reproductor de streaming de audio digital.</p>
 
                 <h3>2. Recopilación de Datos</h3>
-                <p>No recopilamos, almacenamos ni compartimos ninguna información personal identificable.</p>
+                <p>No recopilamos, almacenamos ni compartimos ninguna información personal identificable. La aplicación no requiere la creación de una cuenta.</p>
 
-                <h3>3. Inteligencia Artificial</h3>
-                <p>Nuestra función de "Asistente Musical" utiliza la API de Google Gemini. Las consultas se procesan de forma anónima basándose únicamente en la información de la estación de radio.</p>
+                <h3>3. Identificación del Paquete</h3>
+                <p>Esta aplicación está identificada técnicamente como <strong>com.dnpluspy.radio</strong> para fines de compatibilidad con sistemas operativos y servicios web.</p>
 
-                <h3>4. Contacto</h3>
-                <p>Para dudas sobre privacidad, puede contactarnos a través de nuestras redes sociales oficiales.</p>
-
-                <p class="mt-6 text-[10px] text-cyan-400 text-center font-bold">© 2025 DNPlus Py - Paraguay.</p>
+                <p class="mt-6 text-[10px] text-cyan-400 text-center font-bold">© 2025 DNPlus Py - Paraguay - Transmitiendo Calidad Digital.</p>
             </div>
             <button onclick="closeWidget('privacy-modal')" class="mt-4 bg-cyan-400 text-black py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-colors">He leído y acepto</button>
         </div>
@@ -286,15 +267,11 @@
         <div class="p-6 flex flex-col items-center">
             <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-28 h-28 rounded-2xl shadow-xl shadow-cyan-900/20">
             <h1 class="mt-4 font-black text-white tracking-[3px] text-[12px] font-['Orbitron']">DNPLUS PY</h1>
+            <p class="text-[8px] text-cyan-400 opacity-40 mt-1">com.dnpluspy.radio</p>
         </div>
         
         <div class="flex-grow overflow-y-auto pt-0">
-            <div class="follow-label">INTELIGENCIA ARTIFICIAL</div>
-            <div onclick="openWidget('ai-modal'); toggleMenu();" class="social-card ai-card">
-                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i><span>Asistente Musical ✨</span>
-            </div>
-
-            <div class="follow-label mt-4">SÍGUENOS</div>
+            <div class="follow-label">SÍGUENOS</div>
             <div onclick="openUrl('https://api.whatsapp.com/send?phone=595992536184')" class="social-card">
                 <i class="fa-brands fa-whatsapp text-green-500"></i><span>WhatsApp</span>
             </div>
@@ -307,6 +284,9 @@
             <div onclick="openUrl('https://www.tiktok.com/@davidysugrupo')" class="social-card">
                 <i class="fa-brands fa-tiktok text-white"></i><span>TikTok</span>
             </div>
+            <div onclick="openUrl('https://youtube.com/@davidysugrupo9323')" class="social-card">
+                <i class="fa-brands fa-youtube text-red-600"></i><span>YouTube</span>
+            </div>
         </div>
 
         <div class="drawer-footer">
@@ -314,7 +294,8 @@
                 <i class="fa-solid fa-shield-halved text-cyan-400"></i><span>Política de Privacidad</span>
             </div>
             <div class="text-center opacity-20">
-                <p class="text-[8px] tracking-[2px]">VERSIÓN 5.0.0 (AI ENHANCED)</p>
+                <p class="text-[8px] tracking-[2px]">ID: COM.DNPLUSPY.RADIO</p>
+                <p class="text-[8px] tracking-[2px]">VERSIÓN 5.1.0</p>
             </div>
         </div>
     </div>
@@ -331,15 +312,9 @@
         const timerBadge = document.getElementById('timerBadge');
         const customMinutesInput = document.getElementById('customMinutes');
         const cancelTimerBtn = document.getElementById('cancelTimerBtn');
-        const aiResponse = document.getElementById('ai-response');
-        const askAiBtn = document.getElementById('ask-ai-btn');
 
         let isPlaying = false, currentFx = 1, sleepTimerId = null;
         let audioCtx, analyser, source, dataArray, animationId, hueOffset = 0;
-
-        // Configuración Gemini
-        const apiKey = ""; // La clave se inyecta automáticamente
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'dnplus-radio';
 
         window.addEventListener('load', () => {
             canvas.width = canvas.offsetWidth; 
@@ -354,53 +329,6 @@
         function openUrl(url) { window.open(url, '_blank'); }
         function openPrivacy() { toggleMenu(); openWidget('privacy-modal'); }
 
-        // --- GEMINI AI INTEGRATION ---
-        async function fetchGemini(prompt, systemInstruction = "") {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined
-            };
-
-            for (let i = 0; i < 5; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!response.ok) throw new Error('API Error');
-                    const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No pude obtener una respuesta.";
-                } catch (err) {
-                    const delay = Math.pow(2, i) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
-            }
-            throw new Error('Todos los intentos fallaron');
-        }
-
-        async function askGemini() {
-            aiResponse.innerHTML = '<div class="flex items-center justify-center py-4"><i class="fa-solid fa-sparkles loader-sparkle text-cyan-400 text-2xl"></i></div><p class="text-center text-[10px] uppercase tracking-widest animate-pulse">Consultando a las estrellas...</p>';
-            askAiBtn.disabled = true;
-            askAiBtn.style.opacity = "0.5";
-
-            const trackInfo = document.getElementById('track-text').innerText;
-            const systemPrompt = "Eres el Asistente Musical de DNPlus Py, una radio de Paraguay que transmite calidad digital HD al mundo. Tu tono es profesional, futurista y entusiasta. Responde siempre en español paraguayo amable.";
-            const userPrompt = `Basándote en que la radio se llama "DNPlus Py" y el texto actual de marquesina es "${trackInfo}", analiza qué tipo de música podría estar sonando. Menciona un dato curioso sobre la música en Paraguay o el género pop/urbano/tropical y da un breve mensaje de ánimo al oyente. Mantén la respuesta breve (máximo 3 párrafos cortos).`;
-
-            try {
-                const text = await fetchGemini(userPrompt, systemPrompt);
-                aiResponse.innerHTML = `<div class="animate-in fade-in duration-500">${text.replace(/\n/g, '<br>')}</div>`;
-            } catch (error) {
-                aiResponse.innerHTML = '<p class="text-red-400 text-center">Lo siento, la conexión con la IA ha fallado. Intenta de nuevo en unos segundos.</p>';
-            } finally {
-                askAiBtn.disabled = false;
-                askAiBtn.style.opacity = "1";
-            }
-        }
-
-        // --- LOGICA DE RADIO ---
         function setTimer(minutes) {
             if (sleepTimerId) clearTimeout(sleepTimerId);
             timerBtn.classList.add('timer-running');
