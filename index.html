@@ -11,14 +11,15 @@
     <meta name="application-name" content="DNPlus Py">
     <meta name="apple-itunes-app" content="app-id=com.dnpluspy.radio">
     
-    <!-- CONFIGURACIÓN PWA -->
+    <!-- CONFIGURACIÓN PWA PARA INSTALACIÓN -->
     <meta name="theme-color" content="#2d0c51">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DNPlus Py">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png">
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkROUGx1cyBQeSIsCiAgInNob3J0X25hbWUiOiAiRE5QbHVzIiwKICAiaWRlbnRpZmllciI6ICJjb20uZG5wbHVzcHkucmFkaW8iLAogICJzdGFyd_VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJkMGM1MSIsCiAgInRoZW1lX2NvbG9yIjogIiMydZBjNTEiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImh0dHBzOi8vaS5wb3N0aW1nLmNjL1QxNUN2dlZwL1JvdW5kZWQtMjAyNTEyMDItMjExNDM0LnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
+    <!-- Manifest JSON Corregido para habilitar instalación -->
+    <link rel="manifest" id="pwa-manifest">
 
     <style>
         html, body { background-color: #2d0c51 !important; margin: 0; padding: 0; overflow: hidden; }
@@ -251,7 +252,7 @@
                 <p>No recopilamos, almacenamos ni compartimos ninguna información personal identificable. La aplicación no requiere la creación de una cuenta.</p>
 
                 <h3>3. Identificación del Paquete</h3>
-                <p>Esta aplicación está identificada técnicamente como <strong>com.dnpluspy.radio</strong> para fines de compatibilidad con sistemas operativos y servicios web.</p>
+                <p>Esta aplicación está identificada técnicamente como <strong>com.dnpluspy.radio</strong>.</p>
 
                 <p class="mt-6 text-[10px] text-cyan-400 text-center font-bold">© 2025 DNPlus Py - Paraguay - Transmitiendo Calidad Digital.</p>
             </div>
@@ -295,7 +296,7 @@
             </div>
             <div class="text-center opacity-20">
                 <p class="text-[8px] tracking-[2px]">ID: COM.DNPLUSPY.RADIO</p>
-                <p class="text-[8px] tracking-[2px]">VERSIÓN 5.1.0</p>
+                <p class="text-[8px] tracking-[2px]">VERSIÓN 6.0.0 (PWA)</p>
             </div>
         </div>
     </div>
@@ -303,6 +304,46 @@
     <audio id="radio" src="https://stream.zeno.fm/g2jfwe9xd1bvv" crossorigin="anonymous"></audio>
 
     <script>
+        // CONFIGURACIÓN PWA DINÁMICA
+        const manifest = {
+            "name": "DNPlus Py",
+            "short_name": "DNPlus",
+            "description": "Radio Digital HD - Paraguay al Mundo",
+            "id": "com.dnpluspy.radio",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#2d0c51",
+            "theme_color": "#2d0c51",
+            "orientation": "portrait",
+            "icons": [
+                {
+                    "src": "https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                }
+            ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(manifestBlob));
+
+        // SERVICE WORKER INTEGRADO PARA HABILITAR INSTALACIÓN EN GITHUB
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'dnplus-v1';
+                self.addEventListener('install', (e) => {
+                    self.skipWaiting();
+                });
+                self.addEventListener('fetch', (e) => {
+                    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+                });
+            `;
+            const swBlob = new Blob([swCode], {type: 'application/javascript'});
+            const swUrl = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swUrl).catch(err => console.log("SW Error:", err));
+        }
+
+        // LÓGICA DE LA APP
         const audio = document.getElementById('radio');
         const playIcon = document.getElementById('playIcon');
         const volSlider = document.getElementById('volumeSlider');
@@ -400,7 +441,7 @@
         }
 
         function shareApp() {
-            const url = 'https://dnplus-py.github.io/DNPlus-Py/';
+            const url = window.location.href;
             if (navigator.share) navigator.share({ title: 'DNPlus Py', url }); else window.open(url, '_blank');
         }
 
