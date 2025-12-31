@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-title" content="DNPlus Py">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png">
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkROUGx1cyBQeSIsCiAgInNob3J0X25hbWUiOiAiRE5QbHVzIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMyZDBjNTEiLAogICJ0aGVtZV9jb2xvciI6ICIjMmQwYzUxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvVDE1Q3Z2VnAvUm91bmRlZC0yMDI1MTIwMi0yMTE0MzQucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkROUGx1cyBQeSIsCiAgInNob3J0X25hbWUiOiAiRE5QbHVzIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMmQwYzUxIiwKICAidGhlbWVfY29sb3IiOiAiIzJkMGM1MSIsCiAgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwKICAic2NvcGUiOiAiLi8iLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9UMTVDdnZWcC9Sb3VuZGVkLTIwMjUxMjAyLTIxMTQzNC5wbmciLAogICAgICAic2l6ZXMiIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXQp9">
 
     <style>
         html, body { background-color: #2d0c51 !important; margin: 0; padding: 0; overflow: hidden; }
@@ -34,10 +34,7 @@
             color: white;
             height: 100vh;
             width: 100vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
+            display: flex; flex-direction: column; align-items: center; position: relative;
         }
 
         /* --- EFECTOS DE FONDO --- */
@@ -95,16 +92,12 @@
         .timer-badge { position: absolute; top: -5px; right: -5px; background: white; color: black; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 10px; display: none; }
         .timer-running .timer-badge { display: block; }
         .timer-running { background: #ff4500 !important; color: white !important; border-color: #ffffff !important; animation: heartBeat 1.5s infinite; }
-        @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
         /* --- MENÚ LATERAL --- */
         .drawer {
             position: fixed; top: 0; left: 0; width: 280px; height: 100%;
-            background: rgba(30, 11, 59, 0.98); 
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            z-index: 200; transform: translateX(-100%); 
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(30, 11, 59, 0.98); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            z-index: 200; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; border-right: 1px solid rgba(130, 232, 242, 0.2);
         }
         .drawer.active { transform: translateX(0); }
@@ -112,87 +105,58 @@
         .drawer-overlay.active { display: block; }
 
         .close-drawer-btn {
-            position: absolute; top: 15px; right: 15px;
-            width: 36px; height: 36px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 18px; cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 210;
+            position: absolute; top: 15px; right: 15px; width: 36px; height: 36px;
+            background: rgba(255, 255, 255, 0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; cursor: pointer;
         }
-        .close-drawer-btn:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.9); }
 
         .follow-label {
-            width: 100%; text-align: center;
-            color: #82E8F2; font-family: 'Orbitron', sans-serif;
-            font-weight: 900; font-size: 13px; letter-spacing: 4px;
-            margin: 10px 0 10px 0; opacity: 0.9;
+            width: 100%; text-align: center; color: #82E8F2; font-family: 'Orbitron', sans-serif;
+            font-weight: 900; font-size: 13px; letter-spacing: 4px; margin: 10px 0; opacity: 0.9;
         }
 
         .social-card {
-            display: flex; align-items: center; gap: 15px; 
-            background: rgba(255, 255, 255, 0.05); 
-            border-radius: 12px;
-            padding: 10px 18px; 
-            cursor: pointer; transition: all 0.2s ease;
-            margin: 0 12px 8px 12px;
+            display: flex; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.05); 
+            border-radius: 12px; padding: 10px 18px; cursor: pointer; transition: all 0.2s ease; margin: 0 12px 8px 12px;
         }
         .social-card:active { background: rgba(130, 232, 242, 0.15); transform: scale(0.98); }
         .social-card i { font-size: 16px; width: 20px; text-align: center; }
         .social-card span { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.9); }
 
+        .social-card.privacy-btn { background: transparent !important; border: 1px solid rgba(130, 232, 242, 0.1); }
+        .ai-card { background: linear-gradient(45deg, rgba(130, 232, 242, 0.1), rgba(255, 105, 180, 0.1)) !important; border: 1px solid rgba(130, 232, 242, 0.3) !important; }
+
         /* --- MODALES --- */
         .modal-container { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; 
-            display: none; align-items: center; justify-content: center; padding: 25px;
-            backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center; padding: 25px; backdrop-filter: blur(10px);
         }
         .modal-container.active { display: flex; animation: modalIn 0.3s ease-out; }
         @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .modal-content {
-            background: #111827;
-            border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 24px; width: 100%; max-width: 400px;
-            padding: 25px; position: relative;
-            max-height: 80vh; display: flex; flex-direction: column;
+            background: #111827; border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 24px; 
+            width: 100%; max-width: 400px; padding: 25px; position: relative; max-height: 80vh; display: flex; flex-direction: column;
         }
 
-        .close-modal {
-            position: absolute; top: 15px; right: 15px;
-            width: 30px; height: 30px; color: #82E8F2;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; cursor: pointer; z-index: 10;
-        }
+        .close-modal { position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; color: #82E8F2; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         #volumeSlider { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 5px; outline: none; }
         #volumeSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: #82E8F2; border-radius: 50%; cursor: pointer; }
 
-        /* Estilo para el input de minutos personalizados */
-        .custom-timer-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(130, 232, 242, 0.3);
-            border-radius: 12px;
-            color: #82E8F2;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-            width: 80px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        .custom-timer-input:focus { border-color: #82E8F2; box-shadow: 0 0 10px rgba(130, 232, 242, 0.5); }
+        .custom-timer-input { background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(130, 232, 242, 0.3); border-radius: 12px; color: #82E8F2; font-family: 'Orbitron', sans-serif; text-align: center; padding: 10px; width: 80px; outline: none; }
 
-        .privacy-scroll {
-            overflow-y: auto; padding: 10px 10px;
-            font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.7;
-            text-align: justify;
-        }
+        .privacy-scroll { overflow-y: auto; padding: 10px; font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.7; text-align: justify; }
         .privacy-scroll::-webkit-scrollbar { width: 4px; }
         .privacy-scroll::-webkit-scrollbar-thumb { background: #00f2fe; border-radius: 10px; }
         .privacy-scroll h3 { color: #00f2fe; font-weight: bold; margin-top: 15px; margin-bottom: 5px; text-transform: uppercase; font-size: 11px; }
+
+        .drawer-footer { padding: 20px 0; border-top: 1px solid rgba(130, 232, 242, 0.1); }
+
+        /* AI Chat UI */
+        #ai-response { min-height: 100px; overflow-y: auto; font-size: 13px; color: #e2e8f0; line-height: 1.6; }
+        .loader-sparkle { animation: spin 2s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -252,20 +216,16 @@
         <span id="timerBadge" class="timer-badge">00</span>
     </div>
 
-    <!-- MODAL TEMPORIZADOR PERSONALIZADO -->
+    <!-- MODAL TEMPORIZADOR -->
     <div id="timer-modal" class="modal-container">
         <div class="modal-content text-center">
             <div class="close-modal" onclick="closeWidget('timer-modal')"><i class="fa-solid fa-xmark"></i></div>
             <h2 class="font-['Orbitron'] text-sm mb-4 text-cyan-400 font-black tracking-widest uppercase">Apagado Programado</h2>
-            
-            <p class="text-[10px] text-white/40 mb-4 uppercase tracking-tighter">Accesos Rápidos</p>
             <div class="grid grid-cols-3 gap-3 mb-6">
                 <button onclick="setTimer(15)" class="bg-white/5 py-3 rounded-xl text-white font-bold text-[10px] uppercase border border-white/5 active:bg-cyan-400 active:text-black">15 Min</button>
                 <button onclick="setTimer(30)" class="bg-white/5 py-3 rounded-xl text-white font-bold text-[10px] uppercase border border-white/5 active:bg-cyan-400 active:text-black">30 Min</button>
                 <button onclick="setTimer(60)" class="bg-white/5 py-3 rounded-xl text-white font-bold text-[10px] uppercase border border-white/5 active:bg-cyan-400 active:text-black">60 Min</button>
             </div>
-
-            <p class="text-[10px] text-white/40 mb-3 uppercase tracking-tighter">Tiempo a Medida (Minutos)</p>
             <div class="flex flex-col items-center gap-4">
                 <div class="flex items-center gap-3">
                     <input type="number" id="customMinutes" min="1" max="120" placeholder="00" class="custom-timer-input">
@@ -276,6 +236,22 @@
         </div>
     </div>
 
+    <!-- MODAL GEMINI AI -->
+    <div id="ai-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="close-modal" onclick="closeWidget('ai-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h2 class="font-['Orbitron'] text-sm mb-4 text-cyan-400 font-black tracking-widest uppercase text-center flex items-center justify-center gap-2">
+                Asistente Musical ✨
+            </h2>
+            <div id="ai-response" class="bg-black/20 p-4 rounded-xl mb-4 border border-white/5">
+                <p class="text-center opacity-50 italic">Haz clic en el botón para que Gemini analice la señal...</p>
+            </div>
+            <button id="ask-ai-btn" onclick="askGemini()" class="bg-gradient-to-r from-cyan-400 to-pink-500 text-black py-4 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                <span>¿Qué estoy escuchando? ✨</span>
+            </button>
+        </div>
+    </div>
+
     <!-- MODAL PRIVACIDAD -->
     <div id="privacy-modal" class="modal-container">
         <div class="modal-content">
@@ -283,26 +259,22 @@
             <h2 class="font-['Orbitron'] text-sm mb-4 text-cyan-400 font-black tracking-widest uppercase border-b border-white/5 pb-2 text-center">Política de Privacidad</h2>
             <div class="privacy-scroll">
                 <p class="mb-4 text-xs italic opacity-60">Última revisión: 30 de diciembre de 2025</p>
-                <p>Bienvenido a <strong>DNPlus Py</strong>. Su privacidad es de suma importancia para nosotros. Esta Política describe cómo manejamos la información cuando utiliza nuestra aplicación de transmisión de audio.</p>
-                <h3>1. Recopilación de Información</h3>
-                <p>DNPlus Py es una aplicación diseñada para el acceso directo a contenidos de audio. <strong>No recopilamos ni almacenamos datos personales de identificación</strong> (como nombres, correos electrónicos o números de teléfono) para el uso básico de la aplicación.</p>
-                <h3>2. Uso de Permisos</h3>
-                <p>La aplicación puede solicitar permisos básicos del sistema únicamente para asegurar la correcta transmisión del streaming y la funcionalidad del reproductor en segundo plano.</p>
-                <h3>3. Cookies y Almacenamiento Local</h3>
-                <p>Utilizamos almacenamiento local técnico para recordar sus preferencias de usuario, como el nivel de volumen seleccionado y el temporizador de apagado.</p>
-                <h3>4. Servicios de Terceros</h3>
-                <p>Utilizamos servicios de streaming externos (como Zeno Media). Estos proveedores pueden recopilar datos técnicos anónimos (dirección IP, tipo de dispositivo) para fines estadísticos.</p>
-                <h3>5. Publicidad</h3>
-                <p>Si la aplicación muestra anuncios, estos son gestionados por redes de terceros que pueden utilizar identificadores anónimos para mostrar publicidad relevante.</p>
-                <h3>6. Seguridad</h3>
-                <p>Implementamos medidas de seguridad estándar para proteger la integridad de nuestra aplicación.</p>
-                <h3>7. Menores de Edad</h3>
-                <p>DNPlus Py es apta para todas las edades. No recopilamos conscientemente datos de menores de 13 años.</p>
-                <h3>8. Cambios en la Política</h3>
-                <p>Nos reservamos el derecho de actualizar esta declaración. Cualquier cambio será publicado dentro de esta misma sección.</p>
-                <p class="mt-6 text-[10px] text-cyan-400 text-center font-bold">© 2025 DNPlus Py - Calidad Digital desde Paraguay.</p>
+                
+                <h3>1. Información General</h3>
+                <p>DNPlus Py ("nosotros", "la aplicación") es un reproductor de streaming de audio digital. Esta política explica cómo manejamos la información en relación con su uso de la aplicación.</p>
+
+                <h3>2. Recopilación de Datos</h3>
+                <p>No recopilamos, almacenamos ni compartimos ninguna información personal identificable.</p>
+
+                <h3>3. Inteligencia Artificial</h3>
+                <p>Nuestra función de "Asistente Musical" utiliza la API de Google Gemini. Las consultas se procesan de forma anónima basándose únicamente en la información de la estación de radio.</p>
+
+                <h3>4. Contacto</h3>
+                <p>Para dudas sobre privacidad, puede contactarnos a través de nuestras redes sociales oficiales.</p>
+
+                <p class="mt-6 text-[10px] text-cyan-400 text-center font-bold">© 2025 DNPlus Py - Paraguay.</p>
             </div>
-            <button onclick="closeWidget('privacy-modal')" class="mt-4 bg-cyan-400 text-black py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-colors">Aceptar y Cerrar</button>
+            <button onclick="closeWidget('privacy-modal')" class="mt-4 bg-cyan-400 text-black py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-colors">He leído y acepto</button>
         </div>
     </div>
 
@@ -312,11 +284,17 @@
             <i class="fa-solid fa-xmark"></i>
         </div>
         <div class="p-6 flex flex-col items-center">
-            <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-14 h-14 rounded-2xl shadow-xl">
-            <h1 class="mt-3 font-black text-white tracking-[3px] text-[11px] font-['Orbitron']">DNPLUS PY</h1>
+            <img src="https://i.postimg.cc/T15CvvVp/Rounded-20251202-211434.png" class="w-28 h-28 rounded-2xl shadow-xl shadow-cyan-900/20">
+            <h1 class="mt-4 font-black text-white tracking-[3px] text-[12px] font-['Orbitron']">DNPLUS PY</h1>
         </div>
+        
         <div class="flex-grow overflow-y-auto pt-0">
-            <div class="follow-label">SÍGUENOS</div>
+            <div class="follow-label">INTELIGENCIA ARTIFICIAL</div>
+            <div onclick="openWidget('ai-modal'); toggleMenu();" class="social-card ai-card">
+                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i><span>Asistente Musical ✨</span>
+            </div>
+
+            <div class="follow-label mt-4">SÍGUENOS</div>
             <div onclick="openUrl('https://api.whatsapp.com/send?phone=595992536184')" class="social-card">
                 <i class="fa-brands fa-whatsapp text-green-500"></i><span>WhatsApp</span>
             </div>
@@ -329,17 +307,15 @@
             <div onclick="openUrl('https://www.tiktok.com/@davidysugrupo')" class="social-card">
                 <i class="fa-brands fa-tiktok text-white"></i><span>TikTok</span>
             </div>
-            <div onclick="openUrl('https://www.youtube.com/@davidysugrupotropical')" class="social-card">
-                <i class="fa-brands fa-youtube text-red-600"></i><span>YouTube</span>
-            </div>
-            <div class="mt-2 px-6">
-                <div onclick="openPrivacy()" class="text-center text-[10px] text-cyan-400 font-bold uppercase tracking-[3px] cursor-pointer py-3 hover:opacity-70 transition-opacity">
-                    Política de Privacidad
-                </div>
-            </div>
         </div>
-        <div class="p-4 text-center opacity-20">
-            <p class="text-[8px] tracking-[2px]">VERSIÓN 4.8.5</p>
+
+        <div class="drawer-footer">
+            <div onclick="openPrivacy()" class="social-card privacy-btn mb-2">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i><span>Política de Privacidad</span>
+            </div>
+            <div class="text-center opacity-20">
+                <p class="text-[8px] tracking-[2px]">VERSIÓN 5.0.0 (AI ENHANCED)</p>
+            </div>
         </div>
     </div>
 
@@ -355,9 +331,15 @@
         const timerBadge = document.getElementById('timerBadge');
         const customMinutesInput = document.getElementById('customMinutes');
         const cancelTimerBtn = document.getElementById('cancelTimerBtn');
+        const aiResponse = document.getElementById('ai-response');
+        const askAiBtn = document.getElementById('ask-ai-btn');
 
         let isPlaying = false, currentFx = 1, sleepTimerId = null;
         let audioCtx, analyser, source, dataArray, animationId, hueOffset = 0;
+
+        // Configuración Gemini
+        const apiKey = ""; // La clave se inyecta automáticamente
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'dnplus-radio';
 
         window.addEventListener('load', () => {
             canvas.width = canvas.offsetWidth; 
@@ -372,28 +354,65 @@
         function openUrl(url) { window.open(url, '_blank'); }
         function openPrivacy() { toggleMenu(); openWidget('privacy-modal'); }
 
+        // --- GEMINI AI INTEGRATION ---
+        async function fetchGemini(prompt, systemInstruction = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined
+            };
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('API Error');
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No pude obtener una respuesta.";
+                } catch (err) {
+                    const delay = Math.pow(2, i) * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            throw new Error('Todos los intentos fallaron');
+        }
+
+        async function askGemini() {
+            aiResponse.innerHTML = '<div class="flex items-center justify-center py-4"><i class="fa-solid fa-sparkles loader-sparkle text-cyan-400 text-2xl"></i></div><p class="text-center text-[10px] uppercase tracking-widest animate-pulse">Consultando a las estrellas...</p>';
+            askAiBtn.disabled = true;
+            askAiBtn.style.opacity = "0.5";
+
+            const trackInfo = document.getElementById('track-text').innerText;
+            const systemPrompt = "Eres el Asistente Musical de DNPlus Py, una radio de Paraguay que transmite calidad digital HD al mundo. Tu tono es profesional, futurista y entusiasta. Responde siempre en español paraguayo amable.";
+            const userPrompt = `Basándote en que la radio se llama "DNPlus Py" y el texto actual de marquesina es "${trackInfo}", analiza qué tipo de música podría estar sonando. Menciona un dato curioso sobre la música en Paraguay o el género pop/urbano/tropical y da un breve mensaje de ánimo al oyente. Mantén la respuesta breve (máximo 3 párrafos cortos).`;
+
+            try {
+                const text = await fetchGemini(userPrompt, systemPrompt);
+                aiResponse.innerHTML = `<div class="animate-in fade-in duration-500">${text.replace(/\n/g, '<br>')}</div>`;
+            } catch (error) {
+                aiResponse.innerHTML = '<p class="text-red-400 text-center">Lo siento, la conexión con la IA ha fallado. Intenta de nuevo en unos segundos.</p>';
+            } finally {
+                askAiBtn.disabled = false;
+                askAiBtn.style.opacity = "1";
+            }
+        }
+
+        // --- LOGICA DE RADIO ---
         function setTimer(minutes) {
             if (sleepTimerId) clearTimeout(sleepTimerId);
             timerBtn.classList.add('timer-running');
             cancelTimerBtn.classList.remove('hidden');
             timerBadge.innerText = minutes;
-            
-            sleepTimerId = setTimeout(() => { 
-                if (isPlaying) togglePlayback(); 
-                cancelTimer();
-            }, minutes * 60000);
-            
+            sleepTimerId = setTimeout(() => { if (isPlaying) togglePlayback(); cancelTimer(); }, minutes * 60000);
             closeWidget('timer-modal');
         }
 
         function setCustomTimer() {
             const val = parseInt(customMinutesInput.value);
-            if (isNaN(val) || val <= 0) {
-                customMinutesInput.style.borderColor = "red";
-                setTimeout(() => customMinutesInput.style.borderColor = "", 2000);
-                return;
-            }
-            setTimer(val);
+            if (!isNaN(val) && val > 0) setTimer(val);
         }
 
         function cancelTimer() {
