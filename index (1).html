@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DNPlus Pro</title>
+    <!-- Configuración para modo APK/PWA -->
+    <meta name="theme-color" content="#0b141a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/k4MWCJ9Y/Rounded-20260104-165201.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dn-green: #00a884;
+            --dn-dark: #0b141a;
+            --dn-panel: #202c33;
+            --dn-text: #e9edef;
+            --dn-muted: #8696a0;
+            --dn-bubble-me: #005c4b;
+            --dn-bubble-other: #202c33;
+            --dn-accent: #53bdeb;
+            --dn-check-rec: #85f542; /* Verde limón */
+        }
+
+        body, html {
+            height: 100%; width: 100vw; margin: 0; padding: 0;
+            background-color: var(--dn-dark); color: var(--dn-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; position: fixed;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-container { width: 100%; height: 100%; overflow: hidden; position: relative; }
+
+        .view { 
+            display: none; height: 100%; width: 100%; 
+            flex-direction: column; position: absolute; 
+            top: 0; left: 0; z-index: 10; background: var(--dn-dark); 
+            overflow: hidden;
+        }
+        .view.active { display: flex; }
+
+        #splash {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--dn-dark);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+
+        .toolbar { 
+            background: var(--dn-panel); padding: 8px 12px; 
+            padding-top: calc(8px + env(safe-area-inset-top)); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 100;
+        }
+
+        .tab-btn { 
+            flex: 1; text-align: center; padding: 10px 0; 
+            font-weight: 800; color: var(--dn-muted); 
+            border-bottom: 2px solid transparent; transition: 0.2s; 
+            text-transform: uppercase; font-size: 0.7rem; cursor: pointer; 
+        }
+        .tab-btn.active { color: var(--dn-green); border-bottom-color: var(--dn-green); }
+
+        #chat-msgs {
+            flex: 1; overflow-y: auto; padding: 12px;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-size: 400px;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+
+        .chat-input-container { 
+            padding: 8px; background: #111b21; 
+            display: flex; align-items: flex-end; gap: 8px; width: 100%;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        }
+        
+        .input-bar { 
+            flex: 1; background: var(--dn-panel); 
+            border-radius: 24px; display: flex; 
+            align-items: center; padding: 4px 12px; min-height: 48px;
+        }
+
+        .bubble { 
+            max-width: 85%; padding: 6px 10px; border-radius: 12px; 
+            position: relative; word-wrap: break-word; 
+            font-size: 0.95rem; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column;
+        }
+        .bubble.me { align-self: flex-end; background: var(--dn-bubble-me); border-top-right-radius: 2px; }
+        .bubble.other { align-self: flex-start; background: var(--dn-bubble-other); border-top-left-radius: 2px; }
+        
+        .bubble-time { font-size: 0.65rem; align-self: flex-end; margin-top: 2px; opacity: 0.7; display: flex; align-items: center; gap: 2px; }
+        .bubble-img { width: 100%; max-width: 250px; border-radius: 8px; margin: 2px 0; cursor: pointer; }
+        .heart-big { font-size: 3rem; animation: grow 0.3s ease-out; }
+        @keyframes grow { from { transform: scale(0.5); } to { transform: scale(1); } }
+
+        .modal-attach {
+            position: absolute; bottom: 80px; left: 10px; right: 10px; background: var(--dn-panel);
+            border-radius: 16px; padding: 20px; display: none; grid-template-columns: repeat(3, 1fr);
+            gap: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 501;
+        }
+        .attach-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.75rem; cursor: pointer; }
+        .attach-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
+
+        .status-circle { padding: 2px; border: 2px solid var(--dn-green); border-radius: 50%; }
+
+        /* Estilo APK Install Prompt */
+        #install-banner {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: var(--dn-panel); border: 1px solid var(--dn-green);
+            padding: 15px; border-radius: 15px; display: none;
+            z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Banner de Instalación APK -->
+        <div id="install-banner">
+            <div class="flex items-center gap-4">
+                <img src="https://i.postimg.cc/k4MWCJ9Y/Rounded-20260104-165201.png" class="w-12 h-12 rounded-xl">
+                <div class="flex-1">
+                    <div class="font-bold">Instalar DNPlus Pro</div>
+                    <div class="text-xs text-gray-400">Añadir a la pantalla de inicio</div>
+                </div>
+                <button id="btn-install-confirm" class="bg-[var(--dn-green)] text-black px-4 py-2 rounded-lg font-bold text-sm">INSTALAR</button>
+            </div>
+        </div>
+
+        <!-- SPLASH -->
+        <div id="splash">
+            <img src="https://i.postimg.cc/k4MWCJ9Y/Rounded-20260104-165201.png" class="w-24 h-24 mb-6 rounded-[24px] shadow-2xl">
+            <div class="w-10 h-10 border-4 border-[var(--dn-green)] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <!-- LOGIN / REGISTER -->
+        <div id="view-login" class="view items-center justify-center p-6">
+            <div class="bg-[var(--dn-panel)] p-8 rounded-[32px] w-full max-w-[320px] text-center shadow-2xl">
+                <h1 class="text-3xl font-black text-[var(--dn-green)] mb-6 italic">DNPlus Pro</h1>
+                <div id="login-fields">
+                    <input type="text" id="login-user" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white text-center font-bold mb-4 outline-none" placeholder="Usuario">
+                    <button id="btn-login" class="w-full bg-[var(--dn-green)] py-4 rounded-2xl text-black font-black active:scale-95 flex justify-center items-center">
+                        <span id="btn-login-text">ENTRAR</span>
+                        <div id="login-loader" class="hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                    </button>
+                    <p class="mt-4 text-xs text-[var(--dn-muted)] cursor-pointer" onclick="showView('view-reg1')">¿No tienes cuenta? Regístrate</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-reg1" class="view items-center justify-center p-6">
+            <div class="bg-[var(--dn-panel)] p-8 rounded-[32px] w-full max-w-[320px] text-center shadow-2xl">
+                <h2 class="text-xl font-bold mb-6">Registro</h2>
+                <input type="text" id="reg-username" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white text-center font-bold mb-4 outline-none" placeholder="@usuario_unico">
+                <button id="btn-next-reg" class="w-full bg-[var(--dn-green)] py-4 rounded-2xl text-black font-black active:scale-95">CONTINUAR</button>
+                <p class="mt-4 text-xs text-[var(--dn-muted)] cursor-pointer" onclick="showView('view-login')">Volver a inicio de sesión</p>
+            </div>
+        </div>
+
+        <div id="view-reg2" class="view items-center justify-center p-6">
+            <div class="w-full max-w-[320px] bg-[var(--dn-panel)] p-8 rounded-[32px] text-center shadow-2xl">
+                <div class="relative mb-6 inline-block">
+                    <img id="reg-preview" src="https://i.postimg.cc/qvZ8LtYt/Rounded-20260101-195741.jpg" class="w-32 h-32 rounded-full object-cover border-4 border-[var(--dn-green)] mx-auto">
+                    <label for="reg-file" class="absolute bottom-0 right-0 bg-[var(--dn-green)] p-3 rounded-full cursor-pointer shadow-lg">
+                        <i class="fa-solid fa-camera text-black text-sm"></i>
+                    </label>
+                    <input type="file" id="reg-file" class="hidden" accept="image/*">
+                </div>
+                <input type="text" id="reg-fullname" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white mb-6 text-center font-bold outline-none" placeholder="Tu Nombre">
+                <button id="btn-final-start" class="w-full bg-[var(--dn-green)] py-4 rounded-2xl text-black font-black flex justify-center items-center active:scale-95">
+                    <span id="btn-reg-text">EMPEZAR AHORA</span>
+                    <div id="reg-loader" class="hidden w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div id="view-main" class="view">
+            <header class="toolbar">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-2xl font-black text-[var(--dn-green)] italic">DNPlus Pro</span>
+                    <div class="flex gap-4 text-[var(--dn-muted)] items-center">
+                        <i class="fa-solid fa-search"></i>
+                        <i class="fa-solid fa-ellipsis-vertical p-2" onclick="toggleMenu('main-menu')"></i>
+                    </div>
+                </div>
+                <div id="main-menu" class="absolute top-14 right-4 bg-[var(--dn-panel)] rounded-xl shadow-2xl hidden z-[200] border border-white/5 w-48 overflow-hidden">
+                    <div class="p-4 hover:bg-white/5 cursor-pointer" onclick="clearHistory()">Borrar Historial</div>
+                    <div class="p-4 hover:bg-white/5 cursor-pointer" onclick="changeBackground()">Fondo de pantalla</div>
+                    <div id="menu-install" class="p-4 hover:bg-white/5 cursor-pointer hidden" onclick="triggerInstall()">Instalar APK</div>
+                    <div class="p-4 hover:bg-white/5 cursor-pointer text-red-400" onclick="logout()">Cerrar Sesión</div>
+                </div>
+                <div class="flex">
+                    <div class="tab-btn active" onclick="switchTab('chats', this)">CHATS</div>
+                    <div class="tab-btn" onclick="switchTab('novedades', this)">NOVEDADES</div>
+                    <div class="tab-btn" onclick="switchTab('users', this)">GENTE</div>
+                </div>
+            </header>
+
+            <div id="tab-content" class="flex-1 overflow-y-auto">
+                <div id="tab-chats" class="tab-pane">
+                    <div id="chats-list"></div>
+                </div>
+                <div id="tab-novedades" class="tab-pane hidden p-4">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="relative cursor-pointer" onclick="document.getElementById('status-input').click()">
+                            <img id="my-status-img" src="https://i.postimg.cc/qvZ8LtYt/Rounded-20260101-195741.jpg" class="w-14 h-14 rounded-full object-cover">
+                            <div class="absolute bottom-0 right-0 bg-[var(--dn-green)] rounded-full w-5 h-5 flex items-center justify-center border-2 border-[var(--dn-panel)]">
+                                <i class="fa-solid fa-plus text-[10px] text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-bold">Mi estado</div>
+                            <div class="text-xs text-[var(--dn-muted)]">Toca para añadir actualización</div>
+                        </div>
+                    </div>
+                    <input type="file" id="status-input" class="hidden" accept="image/*,video/*">
+                    <div id="status-list" class="flex flex-col gap-4"></div>
+                </div>
+                <div id="tab-users" class="tab-pane hidden">
+                    <div id="users-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT VIEW -->
+        <div id="view-chat" class="view">
+            <header class="bg-[var(--dn-panel)] p-3 pt-10 flex items-center gap-3 shadow-lg z-50">
+                <i class="fa-solid fa-arrow-left text-lg p-2" onclick="showView('view-main')"></i>
+                <img id="chat-img" src="" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                    <div class="font-bold truncate" id="chat-name">...</div>
+                    <div id="chat-status" class="text-[10px] text-[var(--dn-green)] font-black uppercase tracking-widest">Cargando...</div>
+                </div>
+                <div class="flex gap-4">
+                    <i class="fa-solid fa-video text-[var(--dn-muted)]"></i>
+                    <i class="fa-solid fa-phone text-[var(--dn-green)]"></i>
+                    <i class="fa-solid fa-ellipsis-vertical p-1" onclick="toggleMenu('chat-menu-opt')"></i>
+                </div>
+                <div id="chat-menu-opt" class="absolute top-16 right-4 bg-[var(--dn-panel)] rounded-xl shadow-2xl hidden z-[200] border border-white/5 w-40 overflow-hidden">
+                    <div class="p-3 hover:bg-white/5 cursor-pointer text-red-400" onclick="deleteCurrentChat()">Eliminar Chat</div>
+                </div>
+            </header>
+
+            <div id="chat-msgs"></div>
+
+            <div id="modal-attach" class="modal-attach">
+                <div class="attach-item" onclick="pickFile('image/*')">
+                    <div class="attach-icon bg-purple-500"><i class="fa-solid fa-image"></i></div>
+                    <span>Galería</span>
+                </div>
+                <div class="attach-item" onclick="pickFile('video/*')">
+                    <div class="attach-icon bg-blue-500"><i class="fa-solid fa-video"></i></div>
+                    <span>Video</span>
+                </div>
+                <div class="attach-item" onclick="pickFile('audio/*')">
+                    <div class="attach-icon bg-orange-500"><i class="fa-solid fa-headphones"></i></div>
+                    <span>Audio</span>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="input-bar">
+                    <i class="fa-solid fa-face-laugh text-[var(--dn-muted)] text-xl mr-2 cursor-pointer"></i>
+                    <input id="msg-input" placeholder="Escribe un mensaje..." class="bg-transparent border-none outline-none flex-1 text-white py-3 text-sm">
+                    <i class="fa-solid fa-paperclip text-[var(--dn-muted)] text-xl ml-2 cursor-pointer" onclick="toggleMenu('modal-attach')"></i>
+                </div>
+                <button id="btn-send" class="bg-[var(--dn-green)] w-12 h-12 rounded-full flex items-center justify-center text-black shadow-xl active:scale-90 transition overflow-hidden">
+                    <i id="send-icon" class="fa-solid fa-microphone text-xl"></i>
+                </button>
+            </div>
+            <input type="file" id="file-helper" class="hidden">
+        </div>
+
+        <!-- MENU MENSAJE -->
+        <div id="msg-menu" class="fixed inset-0 bg-black/60 hidden z-[1000] flex-col justify-end p-4" onclick="this.classList.add('hidden')">
+            <div class="bg-[var(--dn-panel)] rounded-2xl overflow-hidden" onclick="event.stopPropagation()">
+                <div class="p-4 hover:bg-white/5 border-b border-white/5" onclick="actionReply()">Responder</div>
+                <div class="p-4 hover:bg-white/5 border-b border-white/5" onclick="actionShare()">Compartir</div>
+                <div class="p-4 hover:bg-white/5 text-red-400" onclick="actionDeleteMsg()">Eliminar</div>
+            </div>
+        </div>
+
+        <!-- COMPARTIR SELECT -->
+        <div id="share-view" class="view">
+            <header class="toolbar">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-xmark text-xl" onclick="showView('view-chat')"></i>
+                    <span class="text-xl font-bold">Compartir con...</span>
+                </div>
+            </header>
+            <div id="share-list" class="flex-1 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, query, orderBy, where, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'com_dn_chats';
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let me = null;
+        let activeChat = null;
+        let selectedMsgId = null;
+        let shareContent = null;
+        let typingTimeout = null;
+        let deferredPrompt;
+
+        // --- Lógica de Instalación APK (PWA) ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-banner').style.display = 'block';
+            document.getElementById('menu-install').classList.remove('hidden');
+        });
+
+        document.getElementById('btn-install-confirm').onclick = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('install-banner').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        };
+
+        window.triggerInstall = () => {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('btn-install-confirm').click();
+        };
+
+        // --- AUTH & INIT ---
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        };
+        initAuth();
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'users', user.uid));
+                if (snap.exists()) {
+                    me = snap.data();
+                    loadApp();
+                } else {
+                    document.getElementById('splash').style.display = 'none';
+                    showView('view-reg1');
+                }
+            }
+        });
+
+        function loadApp() {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('my-status-img').src = me.photo || 'https://i.postimg.cc/qvZ8LtYt/Rounded-20260101-195741.jpg';
+            showView('view-main');
+            listenUsers();
+            listenStatus();
+            setUserPresence(true);
+        }
+
+        async function setUserPresence(isOnline) {
+            if (!me) return;
+            await updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'users', me.uid), {
+                online: isOnline,
+                lastSeen: Date.now()
+            });
+        }
+
+        // --- UI NAVIGATION ---
+        window.showView = (id) => {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('#main-menu, #chat-menu-opt, .modal-attach').forEach(m => m.classList.add('hidden'));
+        };
+
+        window.switchTab = (id, btn) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + id).classList.remove('hidden');
+        };
+
+        window.toggleMenu = (id) => document.getElementById(id).classList.toggle('hidden');
+
+        // --- CHAT LOGIC ---
+        function listenUsers() {
+            onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'users'), (snap) => {
+                const uList = document.getElementById('users-list');
+                const cList = document.getElementById('chats-list');
+                const sList = document.getElementById('share-list');
+                uList.innerHTML = ""; cList.innerHTML = ""; sList.innerHTML = "";
+                
+                snap.forEach(d => {
+                    const u = d.data();
+                    if (me && u.uid === me.uid) return;
+                    
+                    const lastSeenTxt = u.online ? 'En línea' : `Últ. vez ${new Date(u.lastSeen).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                    
+                    const html = `
+                        <div class="flex items-center gap-4 p-4 active:bg-white/5 border-b border-white/5 cursor-pointer" onclick="openChat('${u.uid}','${u.name}','${u.photo}')">
+                            <img src="${u.photo || 'https://i.postimg.cc/qvZ8LtYt/Rounded-20260101-195741.jpg'}" class="w-14 h-14 rounded-full object-cover">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold">${u.name}</span>
+                                </div>
+                                <div class="text-xs text-[var(--dn-muted)] truncate">${u.typing ? 'Escribiendo...' : (u.recording ? 'Grabando audio...' : lastSeenTxt)}</div>
+                            </div>
+                        </div>`;
+                    uList.innerHTML += html; cList.innerHTML += html;
+                    
+                    sList.innerHTML += `<div class="p-4 border-b border-white/5 flex gap-4 items-center" onclick="confirmShare('${u.uid}')">
+                        <img src="${u.photo}" class="w-10 h-10 rounded-full"><span>${u.name}</span>
+                    </div>`;
+                });
+            });
+        }
+
+        window.openChat = (uid, name, photo) => {
+            activeChat = uid;
+            document.getElementById('chat-name').innerText = name;
+            document.getElementById('chat-img').src = photo || 'https://i.postimg.cc/qvZ8LtYt/Rounded-20260101-195741.jpg';
+            showView('view-chat');
+            listenChatPresence();
+            listenMsgs();
+        };
+
+        function listenChatPresence() {
+            onSnapshot(doc(db, 'artifacts', APP_ID, 'public', 'data', 'users', activeChat), (s) => {
+                if(!s.exists()) return;
+                const u = s.data();
+                const statusEl = document.getElementById('chat-status');
+                if(u.typing) statusEl.innerText = "Escribiendo...";
+                else if(u.recording) statusEl.innerText = "Grabando audio...";
+                else if(u.online) statusEl.innerText = "En línea";
+                else statusEl.innerText = `Últ. vez a las ${new Date(u.lastSeen).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            });
+        }
+
+        async function sendMessage(content, type = 'text') {
+            if (!activeChat) return;
+            const cid = [me.uid, activeChat].sort().join('_');
+            await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'chats', cid, 'messages'), {
+                sender: me.uid, 
+                content: content, 
+                type: type,
+                timestamp: Date.now(),
+                status: 'sent'
+            });
+            updateChatStatus(false, false);
+        }
+
+        function listenMsgs() {
+            const cid = [me.uid, activeChat].sort().join('_');
+            const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'chats', cid, 'messages'), orderBy('timestamp', 'asc'));
+            
+            onSnapshot(q, (snap) => {
+                const box = document.getElementById('chat-msgs');
+                box.innerHTML = "";
+                snap.forEach(d => {
+                    const m = d.data();
+                    const el = document.createElement('div');
+                    el.className = `bubble ${m.sender === me.uid ? 'me' : 'other'}`;
+                    el.oncontextmenu = (e) => { e.preventDefault(); showMsgMenu(d.id, m); };
+                    
+                    let contentHtml = "";
+                    if(m.type === 'image') contentHtml = `<img src="${m.content}" class="bubble-img">`;
+                    else if(m.type === 'video') contentHtml = `<video src="${m.content}" controls class="bubble-img"></video>`;
+                    else if(m.type === 'audio') contentHtml = `<audio src="${m.content}" controls class="w-full h-8"></audio>`;
+                    else if(m.content === '❤️') contentHtml = `<span class="heart-big">❤️</span>`;
+                    else contentHtml = `<span>${m.content}</span>`;
+
+                    const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    let checks = "";
+                    if(m.sender === me.uid) {
+                        if(m.status === 'read') checks = `<i class="fa-solid fa-check-double text-blue-400"></i>`;
+                        else if(m.status === 'received') checks = `<i class="fa-solid fa-check-double text-[var(--dn-check-rec)]"></i>`;
+                        else checks = `<i class="fa-solid fa-check text-gray-400"></i>`;
+                    }
+
+                    el.innerHTML = `${contentHtml}<div class="bubble-time">${time} ${checks}</div>`;
+                    box.appendChild(el);
+                    
+                    if(m.sender !== me.uid && m.status !== 'read') {
+                        updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'chats', cid, 'messages', d.id), { status: 'read' });
+                    }
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        // --- INPUT HANDLERS ---
+        const msgInput = document.getElementById('msg-input');
+        const sendIcon = document.getElementById('send-icon');
+        const btnSend = document.getElementById('btn-send');
+
+        msgInput.oninput = () => {
+            const val = msgInput.value.trim();
+            sendIcon.className = val ? "fa-solid fa-paper-plane" : "fa-solid fa-microphone";
+            updateChatStatus(!!val, false);
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => updateChatStatus(false, false), 3000);
+        };
+
+        btnSend.onclick = async () => {
+            const val = msgInput.value.trim();
+            if(val) {
+                msgInput.value = "";
+                sendIcon.className = "fa-solid fa-microphone";
+                await sendMessage(val);
+            }
+        };
+
+        async function updateChatStatus(isTyping, isRecording) {
+            if(!me) return;
+            await updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'users', me.uid), {
+                typing: isTyping,
+                recording: isRecording
+            });
+        }
+
+        // --- NOVEDADES (ESTADOS) ---
+        async function listenStatus() {
+            onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'status'), (snap) => {
+                const list = document.getElementById('status-list');
+                list.innerHTML = "";
+                snap.forEach(d => {
+                    const s = d.data();
+                    const age = (Date.now() - s.timestamp) / 1000;
+                    if(age > 86400) return;
+                    
+                    list.innerHTML += `<div class="flex items-center gap-4">
+                        <div class="status-circle"><img src="${s.thumb}" class="w-12 h-12 rounded-full object-cover"></div>
+                        <div><div class="font-bold">${s.userName}</div><div class="text-[10px] text-[var(--dn-muted)]">Hoy</div></div>
+                    </div>`;
+                });
+            });
+        }
+
+        document.getElementById('status-input').onchange = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = async () => {
+                await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'status'), {
+                    userId: me.uid, userName: me.name, thumb: reader.result, timestamp: Date.now()
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // --- REGISTRO Y LOGIN ---
+        document.getElementById('btn-login').onclick = async () => {
+            const userVal = document.getElementById('login-user').value.trim();
+            if(!userVal) return;
+            
+            document.getElementById('btn-login-text').innerText = "Cargando...";
+            document.getElementById('login-loader').classList.remove('hidden');
+            
+            const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'users'), where('username', '==', userVal));
+            onSnapshot(q, (snap) => {
+                if(!snap.empty) {
+                    me = snap.docs[0].data();
+                    loadApp();
+                } else {
+                    document.getElementById('btn-login-text').innerText = "ENTRAR";
+                    document.getElementById('login-loader').classList.add('hidden');
+                }
+            });
+        };
+
+        document.getElementById('btn-next-reg').onclick = () => {
+            if(document.getElementById('reg-username').value.trim()) showView('view-reg2');
+        };
+
+        document.getElementById('btn-final-start').onclick = async () => {
+            const name = document.getElementById('reg-fullname').value.trim();
+            const user = document.getElementById('reg-username').value.trim();
+            if (!name || !user) return;
+            
+            document.getElementById('btn-reg-text').innerText = "Cargando...";
+            document.getElementById('reg-loader').classList.remove('hidden');
+            
+            me = { 
+                uid: auth.currentUser.uid, 
+                name, 
+                username: user, 
+                photo: document.getElementById('reg-preview').src, 
+                online: true,
+                lastSeen: Date.now(),
+                timestamp: Date.now() 
+            };
+            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'users', me.uid), me);
+            loadApp();
+        };
+
+        document.getElementById('reg-file').onchange = (e) => {
+            const r = new FileReader();
+            r.onload = ev => document.getElementById('reg-preview').src = ev.target.result;
+            r.readAsDataURL(e.target.files[0]);
+        };
+
+        window.logout = () => signOut(auth).then(() => location.reload());
+        window.clearHistory = () => { document.getElementById('chats-list').innerHTML = ""; };
+        window.changeBackground = () => {
+            const colors = ['#0b141a', '#1a1a2e', '#2d1b1b', '#1b2d24'];
+            const cur = colors.indexOf(getComputedStyle(document.body).backgroundColor);
+            document.body.style.backgroundColor = colors[(cur + 1) % colors.length];
+        };
+
+        window.pickFile = (type) => {
+            const h = document.getElementById('file-helper');
+            h.accept = type;
+            h.click();
+            h.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = () => sendMessage(reader.result, type.split('/')[0]);
+                reader.readAsDataURL(file);
+                document.getElementById('modal-attach').classList.add('hidden');
+            };
+        };
+
+    </script>
+</body>
+</html>
